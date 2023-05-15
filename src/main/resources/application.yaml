@@ -1,0 +1,15 @@
+logging:
+    level:
+        root: INFO
+        com.stratio: DEBUG
+
+management:
+    server:
+        port: 8080
+
+server:
+    port: 8080
+    servlet:
+        forward-headers-strategy: framework
+        context-path: /
+
