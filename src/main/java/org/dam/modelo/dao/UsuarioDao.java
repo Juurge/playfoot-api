@@ -40,23 +40,37 @@ public class UsuarioDao {
 
     }
 
-    public static void consultarUsuario(int idUsuario) throws SQLException {
+    public static UsuarioVo consultarUsuario(int idUsuario) throws SQLException {
         BDConexion conexion= new BDConexion();
 
         AutoRollback autoRollback=new AutoRollback(conexion.getConnection());
 
-        String instruccion = "select * from usuarios where id_partido=?;";
+        String instruccion = "select * from usuarios where id_usuario=?;";
 
         PreparedStatement query = conexion.getConnection().prepareStatement(instruccion);
 
         query.setInt(1, idUsuario);
 
         ResultSet rs=query.executeQuery();
+        UsuarioVo user= new UsuarioVo();
         while(rs.next()){
-            //duda, que hago ahora? porque nosotros no mostramos nada por pantalla
+            user.setId(rs.getInt("id_usuario"));
+            user.setNombre(rs.getString("nombre"));
+            user.setApellidos(rs.getString("apellidos"));
+            user.setTelefono(rs.getInt("telefono"));
+            user.setDni(rs.getString("dni"));
+            user.setCorreo(rs.getString("correo"));
+            user.setPosicion(rs.getString("posicion"));
+            user.setPartidosJugados(rs.getString("partidos_jugados"));
+            user.setGoles(rs.getInt("goles"));
+            user.setImagen(rs.getString("imagen"));
+            user.setPuntos(rs.getInt("puntos"));
         }
+
         autoRollback.commit();
         conexion.disconnect();
+        if(user.getId()==0) return null;
+        else return user;
     }
     public static void actualizarUsuario(UsuarioVo miUsuario,int id) throws SQLException {
 
@@ -65,8 +79,7 @@ public class UsuarioDao {
         AutoRollback autoRollback=new AutoRollback(conexion.getConnection());
 
         String instruccion = "UPDATE usuarios SET nombre = ?, apellidos = ?, telefono =?, dni =?," +
-                "correo = ?, posicion = ?, partidos_jugados = ?, goles = ?, imagen = ?," +
-                "puntos = ? WHERE id_Usuario=?;";
+                "correo = ?, posicion = ?, imagen = ? WHERE id_usuario=?;";
 
         PreparedStatement query = conexion.getConnection().prepareStatement(instruccion);
 
@@ -76,11 +89,8 @@ public class UsuarioDao {
         query.setString(4, miUsuario.getDni());
         query.setString(5, miUsuario.getCorreo());
         query.setString(6, miUsuario.getPosicion());
-        query.setString(7, miUsuario.getPartidosJugados());
-        query.setInt(8, miUsuario.getGoles());
-        query.setString(9, miUsuario.getImagen());
-        query.setInt(10, miUsuario.getPuntos());
-        query.setInt(11, id);
+        query.setString(7, miUsuario.getImagen());
+        query.setInt(8, id);
         query.executeUpdate();
 
         autoRollback.commit();

@@ -1,9 +1,15 @@
 package org.dam.modelo.vo;
 
+import com.fasterxml.jackson.core.JsonToken;
+
 public class UsuarioVo {
     private int id;
     private String nombre;
     private String apellidos;
+
+    public UsuarioVo() {
+    }
+
     private int telefono;
     private String dni;
     private String correo;
@@ -23,6 +29,8 @@ public class UsuarioVo {
         this.goles=0;
         this.posicion= "";
         this.partidosJugados="";
+        this.imagen="";
+        this.puntos=0;
     }
 
     public int getId(){
@@ -112,4 +120,6 @@ public class UsuarioVo {
     public void setPuntos(int puntos) {
         this.puntos = puntos;
     }
+
+
 }
