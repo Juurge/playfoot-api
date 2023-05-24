@@ -4,17 +4,21 @@ public class EquipoVo {
 
     private int id;
     private String nombre;
-    private String integrantes;
-    private String partidosGanados;
-    private String partidosPerdidos;
+    private String integrantes="";
+    private String partidosGanados="0";
+    private String partidosPerdidos="0";
     private int idAdministrador;
 
-    public EquipoVo(String nombre, String integrantes, String partidosGanados, String partidosPerdidos, int idAdministrador) {
+    public EquipoVo(String nombre,int idAdministrador) {
+
         this.nombre = nombre;
-        this.integrantes = "" + idAdministrador;
-        this.partidosGanados = "";
-        this.partidosPerdidos = "";
         this.idAdministrador = idAdministrador;
+        setIntegrantes(""+idAdministrador);
+
+    }
+
+    public EquipoVo() {
+
     }
 
     public String getNombre() {

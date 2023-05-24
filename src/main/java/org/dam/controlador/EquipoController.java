@@ -8,10 +8,15 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
+import org.dam.modelo.dao.EquipoDao;
 import org.dam.modelo.http.HttpCodes;
+import org.dam.modelo.vo.EquipoVo;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.sql.SQLException;
 
 @RestController
 @Slf4j
@@ -24,9 +29,17 @@ public class EquipoController {
             @ApiResponse(responseCode = HttpCodes.NOT_FOUND, description = "El ID introducido no existe"),
     })
     @GetMapping(value = "/buscarEquipo", produces = "application/json")
-    public void pruebaGet() throws JsonProcessingException, IOException {
+    public ResponseEntity<String> buscarEquipo(@RequestParam int id) throws JsonProcessingException, IOException, SQLException {
         ObjectMapper objectMapper = new ObjectMapper();
+        EquipoVo equipo=EquipoDao.verEquipo(id);
         objectMapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
+        String usuarioJson = objectMapper.writeValueAsString(equipo);
+        if(equipo.getId()==0){
+            return new ResponseEntity(usuarioJson,HttpStatus.NOT_FOUND);
+        }
+        else{
+            return new ResponseEntity(usuarioJson, HttpStatus.OK);
+        }
     }
 
     @Operation(summary = "Crear equipo")
@@ -35,8 +48,10 @@ public class EquipoController {
             @ApiResponse(responseCode = HttpCodes.BAD_REQUEST, description = "El cuerpo de la petición es incorrecto"),
     })
     @PostMapping(value = "/crearEquipo", produces = "application/json")
-    public String pruebaPost() {
-        return "post";
+    public ResponseEntity crearEquipo(@RequestBody EquipoVo equipo) {
+        equipo.setIntegrantes(""+equipo.getIdAdministrador());
+        EquipoDao.registrarEquipo(equipo);
+        return new ResponseEntity(HttpStatus.CREATED);
     }
 
     @Operation(summary = "Modificar equipo")
@@ -46,8 +61,9 @@ public class EquipoController {
             @ApiResponse(responseCode = HttpCodes.NOT_FOUND, description = "El ID introducido no existe"),
     })
     @PutMapping(value = "/modificarEquipo", produces = "application/json")
-    public String pruebaPut() {
-        return "put";
+    public ResponseEntity modificarEquipo(@RequestBody EquipoVo equipo, @RequestParam int id) throws SQLException {
+        EquipoDao.modificarEquipo(equipo,id);
+        return new ResponseEntity(HttpStatus.OK);
     }
 
     @Operation(summary = "Eliminar equipo")
@@ -56,9 +72,22 @@ public class EquipoController {
             @ApiResponse(responseCode = HttpCodes.NOT_FOUND, description = "El ID introducido no existe")
     })
     @DeleteMapping (value = "/eliminarEquipo", produces = "application/json")
-    public String pruebaDelete(){
-        return "delete";
+    public ResponseEntity eliminarEquipo(@RequestParam int id){
+        EquipoDao.borrarEquipo(id);
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
+
+    @Operation(summary = "Actualizar resultados equipo")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = HttpCodes.OK, description = "Modificado correctamente"),
+            @ApiResponse(responseCode = HttpCodes.BAD_REQUEST, description = "El cuerpo de la petición es incorrecto"),
+            @ApiResponse(responseCode = HttpCodes.NOT_FOUND, description = "El ID introducido no existe"),
+    })
+    @PutMapping(value = "/actualizarResultadoEquipo", produces = "application/json")
+    public ResponseEntity actualizarResultadoEquipo(@RequestBody EquipoVo equipo, @RequestParam int id) throws SQLException {
+        EquipoDao.actualizarResultadoEquipo(equipo,id);
+        return new ResponseEntity(HttpStatus.OK);
     }
 
 }
-
