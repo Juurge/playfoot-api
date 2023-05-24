@@ -9,7 +9,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
 import org.dam.modelo.http.HttpCodes;
-import org.dam.modelo.vo.Prueba;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -25,12 +24,9 @@ public class EquipoController {
             @ApiResponse(responseCode = HttpCodes.NOT_FOUND, description = "El ID introducido no existe"),
     })
     @GetMapping(value = "/buscarEquipo", produces = "application/json")
-    public String pruebaGet() throws JsonProcessingException, IOException {
+    public void pruebaGet() throws JsonProcessingException, IOException {
         ObjectMapper objectMapper = new ObjectMapper();
-        Prueba prueba = new Prueba(1,"Alba");
         objectMapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
-        String usuarioJson = objectMapper.writeValueAsString(prueba);
-        return usuarioJson;
     }
 
     @Operation(summary = "Crear equipo")
@@ -65,3 +61,4 @@ public class EquipoController {
     }
 
 }
+

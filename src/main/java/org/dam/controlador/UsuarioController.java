@@ -1,9 +1,5 @@
 package org.dam.controlador;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.PropertyAccessor;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -11,7 +7,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
 import org.dam.modelo.dao.UsuarioDao;
 import org.dam.modelo.http.HttpCodes;
-import org.dam.modelo.vo.Prueba;
 import org.dam.modelo.vo.UsuarioVo;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,8 +14,6 @@ import org.springframework.http.HttpStatus;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 
 @RestController
 @Slf4j
@@ -28,17 +21,34 @@ import java.util.List;
 public class UsuarioController {
 
     @Operation(summary = "Buscar usuario por ID")
-        @ApiResponses(value = {
+    @ApiResponses(value = {
             @ApiResponse(responseCode = HttpCodes.OK, description = "ID correcto."),
             @ApiResponse(responseCode = HttpCodes.NOT_FOUND, description = "El ID introducido no existe"),
-   })
+    })
     @GetMapping(value = "/buscarUsuario", produces = "application/json")
     public ResponseEntity<String> buscarUsuario(@RequestParam int id) throws IOException, SQLException {
         ObjectMapper objectMapper = new ObjectMapper();
-        UsuarioVo user= UsuarioDao.consultarUsuario(id);
+        UsuarioVo user = UsuarioDao.consultarUsuario(id);
         String usuarioJson = objectMapper.writeValueAsString(user);
-        if(user.getId()==0) return new ResponseEntity(usuarioJson,HttpStatus.NOT_FOUND);
-        else return new ResponseEntity(usuarioJson, HttpStatus.OK);
+        if (user.getId() == 0) {
+            return new ResponseEntity(usuarioJson, HttpStatus.NOT_FOUND);
+        } else {
+            return new ResponseEntity(usuarioJson, HttpStatus.OK);
+        }
+    }
+
+    @Operation(summary = "Hacer login")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = HttpCodes.OK, description = "Credenciales correctas."),
+            @ApiResponse(responseCode = HttpCodes.NOT_FOUND, description = "Credenciales incorrectas"),
+    })
+    @GetMapping(value = "/loginUsuario", produces = "application/json")
+    public ResponseEntity loginUsuario(@RequestParam String correo, @RequestParam String password) throws IOException, SQLException {
+        if (UsuarioDao.loginUsuario(correo, password)) {
+            return new ResponseEntity(HttpStatus.OK);
+        } else {
+            return new ResponseEntity(HttpStatus.NOT_FOUND);
+        }
     }
 
     @Operation(summary = "Crear usuario")
@@ -66,12 +76,23 @@ public class UsuarioController {
 
     @Operation(summary = "Eliminar usuario")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = HttpCodes.OK, description = "ID correcto."),
-        @ApiResponse(responseCode = HttpCodes.NOT_FOUND, description = "El ID introducido no existe")
+            @ApiResponse(responseCode = HttpCodes.OK, description = "ID correcto."),
+            @ApiResponse(responseCode = HttpCodes.NOT_FOUND, description = "El ID introducido no existe")
     })
     @DeleteMapping (value = "/eliminarUsuario", produces = "application/json")
     public ResponseEntity eliminarUsuario(@RequestParam int id) throws SQLException {
         UsuarioDao.borrarUsuario(id);
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
+    @Operation(summary = "Modificar contraseña")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = HttpCodes.OK, description = "Modificado correctamente"),
+            @ApiResponse(responseCode = HttpCodes.NOT_FOUND, description = "El ID introducido no existe"),
+    })
+    @PutMapping(value = "/modificarPassword", produces = "application/json")
+    public ResponseEntity modificarPassword(@RequestParam String correo, @RequestParam String password) throws SQLException {
+        UsuarioDao.modificarPassword(correo,password);
         return new ResponseEntity(HttpStatus.OK);
     }
 

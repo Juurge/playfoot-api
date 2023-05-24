@@ -10,6 +10,9 @@ public class IncTecnicaVo {
         this.descripcion = descripcion;
         this.idUsuario = idUsuario;
     }
+    public IncTecnicaVo(){
+
+    }
 
     public String getDescripcion() {
         return descripcion;

@@ -6,31 +6,24 @@ public class UsuarioVo {
     private int id;
     private String nombre;
     private String apellidos;
-
-    public UsuarioVo() {
-    }
-
     private int telefono;
     private String dni;
     private String correo;
-    private String posicion;
-    private String partidosJugados;
-    private int goles;
+    private String password;
+    private String posicion="";
+    private String partidosJugados="";
+    private int goles=0;
+    private int puntos=0;
 
-    private String imagen;
-    private int puntos;
-
-    public UsuarioVo(String nombre, String apellidos, int telefono, String dni, String correo) {
+    public UsuarioVo() {
+    }
+    public UsuarioVo(String nombre, String apellidos, int telefono, String dni, String correo, String password) {
         this.nombre=nombre;
         this.apellidos=apellidos;
         this.telefono=telefono;
         this.dni=dni;
         this.correo=correo;
-        this.goles=0;
-        this.posicion= "";
-        this.partidosJugados="";
-        this.imagen="";
-        this.puntos=0;
+        this.password=password;
     }
 
     public int getId(){
@@ -105,14 +98,6 @@ public class UsuarioVo {
         this.goles = this.goles + goles;
     }
 
-    public String getImagen() {
-        return imagen;
-    }
-
-    public void setImagen(String imagen) {
-        this.imagen = imagen;
-    }
-
     public int getPuntos() {
         return puntos;
     }
@@ -121,5 +106,11 @@ public class UsuarioVo {
         this.puntos = puntos;
     }
 
+    public String getPassword() {
+        return password;
+    }
 
+    public void setPassword(String password) {
+        this.password = password;
+    }
 }

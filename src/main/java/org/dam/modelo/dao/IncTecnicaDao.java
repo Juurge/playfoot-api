@@ -2,104 +2,84 @@ package org.dam.modelo.dao;
 
 import org.dam.modelo.conexion.AutoRollback;
 import org.dam.modelo.conexion.BDConexion;
+import org.dam.modelo.vo.IncPartidoVo;
 import org.dam.modelo.vo.IncTecnicaVo;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class IncTecnicaDao {
-
-    public static void registrarIncTecnica(IncTecnicaVo miIncTecnica) {
+    public static void registrarIncTecnica(IncTecnicaVo miIncTecnica) throws SQLException {
         BDConexion conexion = new BDConexion();
 
-        try {
+        AutoRollback autoRollback=new AutoRollback(conexion.getConnection());
 
-            AutoRollback autoRollback=new AutoRollback(conexion.getConnection());
+        String instruccion = "insert into inc_tecnicas (descripcion,id_usuario) values (?,?);";
 
-            String instruccion = "insert into inc_tecnicas (descripcion,id_usuario) values (?,?);";
+        PreparedStatement query = conexion.getConnection().prepareStatement(instruccion);
 
-            PreparedStatement query = conexion.getConnection().prepareStatement(instruccion);
+        query.setString(1, miIncTecnica.getDescripcion());
+        query.setInt(2, miIncTecnica.getIdUsuario());
 
-            query.setString(1, miIncTecnica.getDescripcion());
-            query.setInt(2, miIncTecnica.getIdUsuario());
+        query.executeUpdate();
 
-            query.executeUpdate();
-
-            autoRollback.commit();
-            conexion.disconnect();
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        autoRollback.commit();
+        conexion.disconnect();
     }
-
-    public static void borrarIncTecnica(IncTecnicaVo miIncTecnica) {
+    public static IncTecnicaVo verIncTecnica(int idIncTecnica) throws SQLException {
         BDConexion conexion = new BDConexion();
 
-        try {
+        AutoRollback autoRollback=new AutoRollback(conexion.getConnection());
 
-            AutoRollback autoRollback=new AutoRollback(conexion.getConnection());
+        String instruccion = "select * from inc_tecnicas where id_incidencia=?;";
 
-            String instruccion = "delete from inc_tecnicas where id_incidencia=?;";
+        PreparedStatement query = conexion.getConnection().prepareStatement(instruccion);
 
-            PreparedStatement query = conexion.getConnection().prepareStatement(instruccion);
+        query.setInt(1, idIncTecnica);
 
-            query.setInt(1, miIncTecnica.getId());
-
-            query.executeUpdate();
-
-            autoRollback.commit();
-            conexion.disconnect();
-
-        } catch (SQLException e) {
-            e.printStackTrace();
+        ResultSet rs=query.executeQuery();
+        IncTecnicaVo inc = new IncTecnicaVo();
+        while(rs.next()){
+            inc.setId(rs.getInt("id_incidencia"));
+            inc.setDescripcion(rs.getString("descripcion"));
+            inc.setIdUsuario(rs.getInt("id_usuario"));
         }
-    }
 
-    public static void verIncTecnica(IncTecnicaVo miIncTecnica) {
+        autoRollback.commit();
+        conexion.disconnect();
+
+        return inc;
+    }
+    public static void actualizarIncTecnica(IncTecnicaVo miIncTecnica, int id) throws SQLException {
         BDConexion conexion = new BDConexion();
 
-        try {
+        AutoRollback autoRollback = new AutoRollback(conexion.getConnection());
 
-            AutoRollback autoRollback=new AutoRollback(conexion.getConnection());
+        String instruccion = "update inc_tecnicas set descripcion =? where id_incidencia=?;";
 
-            String instruccion = "select * from inc_tecnicas where id_incidencia=?;";
+        PreparedStatement query = conexion.getConnection().prepareStatement(instruccion);
 
-            PreparedStatement query = conexion.getConnection().prepareStatement(instruccion);
+        query.setString(1, miIncTecnica.getDescripcion());
+        query.setInt(2, id);
 
-            query.setInt(1, miIncTecnica.getId());
+        query.executeUpdate();
 
-            query.executeQuery();
-
-            autoRollback.commit();
-            conexion.disconnect();
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
+        autoRollback.commit();
+        conexion.disconnect();
     }
-    public static void actualizarIncTecnica(IncTecnicaVo miIncTecnica) {
+    public static void borrarIncTecnica(int idIncTecnica) throws SQLException {
         BDConexion conexion = new BDConexion();
 
-        try {
+        AutoRollback autoRollback=new AutoRollback(conexion.getConnection());
 
-            AutoRollback autoRollback=new AutoRollback(conexion.getConnection());
+        String instruccion = "delete from inc_tecnicas where id_incidencia=?;";
 
-            String instruccion = "update inc_tecnicas set descripcion values =? where id_incidencia=?;";
+        PreparedStatement query = conexion.getConnection().prepareStatement(instruccion);
 
-            PreparedStatement query = conexion.getConnection().prepareStatement(instruccion);
+        query.setInt(1, idIncTecnica);
+        query.executeUpdate();
 
-            query.setString(1, miIncTecnica.getDescripcion());
-            query.setInt(2, miIncTecnica.getId());
-
-            query.executeUpdate();
-
-            autoRollback.commit();
-            conexion.disconnect();
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        autoRollback.commit();
+        conexion.disconnect();
     }
-
 }

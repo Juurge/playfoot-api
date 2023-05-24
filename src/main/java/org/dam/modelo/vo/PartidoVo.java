@@ -1,50 +1,39 @@
 package org.dam.modelo.vo;
 
-
-
-
-
-
-
-import org.dam.modelo.vo.enums.Estado;
-import org.dam.modelo.vo.enums.Tipo;
-
-import java.util.Date;
-
 public class PartidoVo {
 
     private int id;
-    private Date fecha;
+    private String fecha;
     private String hora;
-    private String resultado;
+    private String resultado="0-0";
     private String ganador;
-    private String integrantes;
+    private String integrantes="";
     private String goleadores;
-    private Tipo tipo;
-    private Estado estado;
-    private int contador;
+    private String tipo;
+    private String estado;
+    private int contador=0;
+    private String comentarios="";
     private int idInstalacion;
     private int idAdministrador;
 
-    public PartidoVo(Date fecha, String hora, String integrantes, String goleadores, Tipo tipo,
-                     Estado estado, int idInstalacion, int idAdministrador){
+    public PartidoVo(String fecha, String hora, String tipo,
+                     String estado, int idInstalacion, int idAdministrador){
         this.fecha=fecha;
         this.hora=hora;
-        this.resultado="0-0";
-        this.integrantes="" + idAdministrador;
-        this.goleadores="";
         this.tipo=tipo;
         this.estado=estado;
-        this.contador=0;
         this.idInstalacion=idInstalacion;
         this.idAdministrador=idAdministrador;
     }
 
-    public Date getFecha() {
+    public PartidoVo() {
+    }
+
+    public String getFecha() {
         return fecha;
     }
 
-    public void setFecha(Date fecha) {
+    public void setFecha(String fecha) {
         this.fecha = fecha;
     }
 
@@ -77,7 +66,7 @@ public class PartidoVo {
     }
 
     public void setIntegrantes(String integrantes) {
-        this.integrantes = this.integrantes + integrantes;
+        this.integrantes = integrantes;
     }
 
     public String getGoleadores() {
@@ -88,19 +77,19 @@ public class PartidoVo {
         this.goleadores = goleadores;
     }
 
-    public Tipo getTipo() {
+    public String getTipo() {
         return tipo;
     }
 
-    public void setTipo(Tipo tipo) {
+    public void setTipo(String tipo) {
         this.tipo = tipo;
     }
 
-    public Estado getEstado() {
+    public String getEstado() {
         return estado;
     }
 
-    public void setEstado(Estado estado) {
+    public void setEstado(String estado) {
         this.estado = estado;
     }
 
@@ -134,5 +123,12 @@ public class PartidoVo {
 
     public void setId(int id) {
         this.id = id;
+    }
+    public String getComentarios() {
+        return comentarios;
+    }
+
+    public void setComentarios(String comentarios) {
+        this.comentarios = comentarios;
     }
 }

@@ -9,15 +9,14 @@ import java.sql.SQLException;
 
 public class UsuarioDao {
 
-
     public static void crearUsuario(UsuarioVo miUsuario) throws SQLException {
 
         BDConexion conexion= new BDConexion();
 
         AutoRollback autoRollback=new AutoRollback(conexion.getConnection());
 
-        String instruccion = "insert into usuarios (nombre, apellidos, telefono, dni, correo," +
-                "posicion, partidos_jugados, goles, imagen, puntos) values (?,?,?,?,?,?,?,?,?,?);";
+        String instruccion = "insert into usuarios (nombre, apellidos, telefono, dni, correo, password, " +
+                "posicion, partidos_jugados, goles, puntos) values (?,?,?,?,?,?,?,?,?,?);";
 
         PreparedStatement query = conexion.getConnection().prepareStatement(instruccion);
 
@@ -26,17 +25,16 @@ public class UsuarioDao {
         query.setInt(3, miUsuario.getTelefono());
         query.setString(4, miUsuario.getDni());
         query.setString(5, miUsuario.getCorreo());
-        query.setString(6, miUsuario.getPosicion());
-        query.setString(7, miUsuario.getPartidosJugados());
-        query.setInt(8, miUsuario.getGoles());
-        query.setString(9, miUsuario.getImagen());
+        query.setString(6, miUsuario.getPassword());
+        query.setString(7, miUsuario.getPosicion());
+        query.setString(8, miUsuario.getPartidosJugados());
+        query.setInt(9, miUsuario.getGoles());
         query.setInt(10, miUsuario.getPuntos());
 
         query.executeUpdate();
 
         autoRollback.commit();
         conexion.disconnect();
-
 
     }
 
@@ -63,14 +61,13 @@ public class UsuarioDao {
             user.setPosicion(rs.getString("posicion"));
             user.setPartidosJugados(rs.getString("partidos_jugados"));
             user.setGoles(rs.getInt("goles"));
-            user.setImagen(rs.getString("imagen"));
             user.setPuntos(rs.getInt("puntos"));
         }
 
         autoRollback.commit();
         conexion.disconnect();
-        if(user.getId()==0) return null;
-        else return user;
+
+        return user;
     }
     public static void actualizarUsuario(UsuarioVo miUsuario,int id) throws SQLException {
 
@@ -79,7 +76,7 @@ public class UsuarioDao {
         AutoRollback autoRollback=new AutoRollback(conexion.getConnection());
 
         String instruccion = "UPDATE usuarios SET nombre = ?, apellidos = ?, telefono =?, dni =?," +
-                "correo = ?, posicion = ?, imagen = ? WHERE id_usuario=?;";
+                "correo = ?, posicion = ? WHERE id_usuario=?;";
 
         PreparedStatement query = conexion.getConnection().prepareStatement(instruccion);
 
@@ -89,13 +86,11 @@ public class UsuarioDao {
         query.setString(4, miUsuario.getDni());
         query.setString(5, miUsuario.getCorreo());
         query.setString(6, miUsuario.getPosicion());
-        query.setString(7, miUsuario.getImagen());
         query.setInt(8, id);
         query.executeUpdate();
 
         autoRollback.commit();
         conexion.disconnect();
-
     }
     public static void borrarUsuario(int idUsuario) throws SQLException {
         BDConexion conexion = new BDConexion();
@@ -111,5 +106,63 @@ public class UsuarioDao {
 
         autoRollback.commit();
         conexion.disconnect();
+    }
+
+    public static boolean loginUsuario(String correo, String password) throws SQLException {
+        BDConexion conexion = new BDConexion();
+
+        AutoRollback autoRollback = new AutoRollback(conexion.getConnection());
+
+        String instruccion = "select * from usuarios where correo=? and password=?;";
+
+        PreparedStatement query = conexion.getConnection().prepareStatement(instruccion);
+
+        query.setString(1, correo);
+        query.setString(2, password);
+        boolean user=false;
+
+        ResultSet rs=query.executeQuery();
+
+        while(rs.next()){
+            if (correo.equalsIgnoreCase(rs.getString("correo"))){
+                if (password.equalsIgnoreCase(rs.getString("password"))){
+                    return true;
+                }
+            }
+        }
+
+        autoRollback.commit();
+        conexion.disconnect();
+
+        return false;
+    }
+
+    public static void modificarPassword(String correo, String password) throws SQLException {
+
+        BDConexion conexion= new BDConexion();
+
+        AutoRollback autoRollback=new AutoRollback(conexion.getConnection());
+
+        String instruccion = "select * from usuarios where correo=?;";
+
+        PreparedStatement query = conexion.getConnection().prepareStatement(instruccion);
+
+        query.setString(1, correo);
+
+        ResultSet rs=query.executeQuery();
+
+        while(rs.next()){
+            if (rs.getString("correo").equalsIgnoreCase(correo)){
+                String instruccionSetteo = "UPDATE usuarios SET password = ? WHERE correo=?;";
+                PreparedStatement querySetteo = conexion.getConnection().prepareStatement(instruccionSetteo);
+                querySetteo.setString(1, password);
+                querySetteo.setString(2, correo);
+                querySetteo.executeUpdate();
+            }
+        }
+
+        autoRollback.commit();
+        conexion.disconnect();
+
     }
 }

@@ -9,6 +9,9 @@ public class IncPartidoVo {
         this.descripcion = descripcion;
         this.idPartido = idPartido;
     }
+    public IncPartidoVo(){
+
+    }
 
     public String getDescripcion() {
         return descripcion;

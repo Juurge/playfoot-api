@@ -4,99 +4,82 @@ import org.dam.modelo.conexion.AutoRollback;
 import org.dam.modelo.conexion.BDConexion;
 import org.dam.modelo.vo.IncPartidoVo;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class IncPartidoDao {
-
-    public static void registrarIncPartido(IncPartidoVo miIncPartido) {
+    public static void registrarIncPartido(IncPartidoVo miIncPartido) throws SQLException {
         BDConexion conexion = new BDConexion();
 
-        try {
+        AutoRollback autoRollback=new AutoRollback(conexion.getConnection());
 
-            AutoRollback autoRollback=new AutoRollback(conexion.getConnection());
+        String instruccion = "insert into inc_partidos (descripcion,id_partido) values (?,?);";
 
-            String instruccion = "insert into inc_partidos (descripcion,id_partido) values (?,?);";
+        PreparedStatement query = conexion.getConnection().prepareStatement(instruccion);
 
-            PreparedStatement query = conexion.getConnection().prepareStatement(instruccion);
+        query.setString(1, miIncPartido.getDescripcion());
+        query.setInt(2, miIncPartido.getIdPartido());
 
-            query.setString(1, miIncPartido.getDescripcion());
-            query.setInt(2, miIncPartido.getIdPartido());
+        query.executeUpdate();
 
-            query.executeUpdate();
-
-            autoRollback.commit();
-            conexion.disconnect();
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        autoRollback.commit();
+        conexion.disconnect();
     }
-    public static void borrarIncPartido(int id) {
+    public static IncPartidoVo consultarIncPartido(int idIncPartido) throws SQLException {
         BDConexion conexion = new BDConexion();
 
-        try {
+        AutoRollback autoRollback = new AutoRollback(conexion.getConnection());
 
-            AutoRollback autoRollback=new AutoRollback(conexion.getConnection());
+        String instruccion = "select * from inc_partidos where id_incidencia=?;";
 
-            String instruccion = "delete from inc_partidos where id_incidencia=?;";
+        PreparedStatement query = conexion.getConnection().prepareStatement(instruccion);
 
-            PreparedStatement query = conexion.getConnection().prepareStatement(instruccion);
+        query.setInt(1, idIncPartido);
 
-            query.setInt(1, id);
-
-            query.executeUpdate();
-
-            autoRollback.commit();
-            conexion.disconnect();
-
-        } catch (SQLException e) {
-            e.printStackTrace();
+        ResultSet rs = query.executeQuery();
+        IncPartidoVo inc = new IncPartidoVo();
+        while (rs.next()) {
+            inc.setId(rs.getInt("id_incidencia"));
+            inc.setDescripcion(rs.getString("descripcion"));
+            inc.setIdPartido(rs.getInt("id_partido"));
         }
+
+        autoRollback.commit();
+        conexion.disconnect();
+
+        return inc;
     }
-
-    public static void verIncPartido(IncPartidoVo miIncPartido) {
+    public static void actualizarIncPartido(IncPartidoVo miIncPartido,int id) throws SQLException {
         BDConexion conexion = new BDConexion();
 
-        try {
+        AutoRollback autoRollback=new AutoRollback(conexion.getConnection());
 
-            AutoRollback autoRollback=new AutoRollback(conexion.getConnection());
+        String instruccion = "update inc_partidos set descripcion =? where id_incidencia=?;";
 
-            String instruccion = "select * from inc_partidos where id_incidencia=?;";
+        PreparedStatement query = conexion.getConnection().prepareStatement(instruccion);
 
-            PreparedStatement query = conexion.getConnection().prepareStatement(instruccion);
+        query.setString(1, miIncPartido.getDescripcion());
+        query.setInt(2, id);
 
-            query.setInt(1, miIncPartido.getId());
+        query.executeUpdate();
 
-            query.executeQuery();
-
-            autoRollback.commit();
-            conexion.disconnect();
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        autoRollback.commit();
+        conexion.disconnect();
     }
-    public static void actualizarIncPartido(IncPartidoVo miIncPartido,int id) {
+    public static void borrarIncPartido(int id) throws SQLException {
         BDConexion conexion = new BDConexion();
 
-        try {
+        AutoRollback autoRollback=new AutoRollback(conexion.getConnection());
 
-            AutoRollback autoRollback=new AutoRollback(conexion.getConnection());
+        String instruccion = "delete from inc_partidos where id_incidencia=?;";
 
-            String instruccion = "update inc_partidos set descripcion values =? where id_incidencia=?;";
+        PreparedStatement query = conexion.getConnection().prepareStatement(instruccion);
 
-            PreparedStatement query = conexion.getConnection().prepareStatement(instruccion);
+        query.setInt(1, id);
 
-            query.setString(1, miIncPartido.getDescripcion());
-            query.setInt(2, id);
+        query.executeUpdate();
 
-            query.executeUpdate();
-
-            autoRollback.commit();
-            conexion.disconnect();
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        autoRollback.commit();
+        conexion.disconnect();
     }
 }

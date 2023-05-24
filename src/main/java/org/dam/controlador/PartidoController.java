@@ -1,18 +1,18 @@
 package org.dam.controlador;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.PropertyAccessor;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
+import org.dam.modelo.dao.PartidoDao;
 import org.dam.modelo.http.HttpCodes;
-import org.dam.modelo.vo.Prueba;
+import org.dam.modelo.vo.PartidoVo;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.io.IOException;
+import java.sql.SQLException;
 
 @RestController
 @Slf4j
@@ -25,12 +25,15 @@ public class PartidoController {
             @ApiResponse(responseCode = HttpCodes.NOT_FOUND, description = "El ID introducido no existe"),
     })
     @GetMapping(value = "/buscarPartido", produces = "application/json")
-    public String pruebaGet() throws JsonProcessingException, IOException {
+    public ResponseEntity<String> buscarPartido(@RequestParam int id) throws IOException, SQLException {
         ObjectMapper objectMapper = new ObjectMapper();
-        Prueba prueba = new Prueba(1,"Alba");
-        objectMapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
-        String usuarioJson = objectMapper.writeValueAsString(prueba);
-        return usuarioJson;
+        PartidoVo partido = PartidoDao.consultarPartido(id);
+        String partidoJson = objectMapper.writeValueAsString(partido);
+        if (partido.getId() == 0) {
+            return new ResponseEntity(partidoJson, HttpStatus.NOT_FOUND);
+        } else {
+            return new ResponseEntity(partidoJson, HttpStatus.OK);
+        }
     }
 
     @Operation(summary = "Crear partido")
@@ -39,8 +42,9 @@ public class PartidoController {
             @ApiResponse(responseCode = HttpCodes.BAD_REQUEST, description = "El cuerpo de la petición es incorrecto"),
     })
     @PostMapping(value = "/crearPartido", produces = "application/json")
-    public String pruebaPost() {
-        return "post";
+    public ResponseEntity crearPartido(@RequestBody PartidoVo partido) throws SQLException {
+        PartidoDao.crearPartido(partido);
+        return new ResponseEntity(HttpStatus.CREATED);
     }
 
     @Operation(summary = "Modificar partido")
@@ -50,18 +54,9 @@ public class PartidoController {
             @ApiResponse(responseCode = HttpCodes.NOT_FOUND, description = "El ID introducido no existe"),
     })
     @PutMapping(value = "/modificarPartido", produces = "application/json")
-    public String pruebaPut() {
-        return "put";
+    public ResponseEntity modificarPartido(@RequestBody PartidoVo partido,@RequestParam int id) throws SQLException {
+        PartidoDao.actualizarPartido(partido,id);
+        return new ResponseEntity(HttpStatus.OK);
     }
-
-    @Operation(summary = "Eliminar partido")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = HttpCodes.OK, description = "ID correcto."),
-            @ApiResponse(responseCode = HttpCodes.NOT_FOUND, description = "El ID introducido no existe")
-    })
-    @DeleteMapping (value = "/eliminarPartido", produces = "application/json")
-    public String pruebaDelete(){
-        return "delete";
-    }
-
 }
+
