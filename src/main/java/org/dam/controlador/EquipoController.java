@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 @RestController
 @Slf4j
@@ -77,17 +78,17 @@ public class EquipoController {
         return new ResponseEntity(HttpStatus.OK);
     }
 
-
-    @Operation(summary = "Actualizar resultados equipo")
+    @Operation(summary = "Consultar todos los equipos")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = HttpCodes.OK, description = "Modificado correctamente"),
-            @ApiResponse(responseCode = HttpCodes.BAD_REQUEST, description = "El cuerpo de la petición es incorrecto"),
+            @ApiResponse(responseCode = HttpCodes.OK, description = "ID correcto."),
             @ApiResponse(responseCode = HttpCodes.NOT_FOUND, description = "El ID introducido no existe"),
     })
-    @PutMapping(value = "/actualizarResultadoEquipo", produces = "application/json")
-    public ResponseEntity actualizarResultadoEquipo(@RequestBody EquipoVo equipo, @RequestParam int id) throws SQLException {
-        EquipoDao.actualizarResultadoEquipo(equipo,id);
-        return new ResponseEntity(HttpStatus.OK);
+    @GetMapping(value = "/consultarTodos", produces = "application/json")
+    public ResponseEntity<ArrayList<EquipoVo>> consultarTodos() throws IOException, SQLException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        ArrayList<EquipoVo> equipos = EquipoDao.consultarTodos();
+        String equiposJson = objectMapper.writeValueAsString(equipos);
+        return new ResponseEntity(equiposJson, HttpStatus.OK);
     }
 
 }

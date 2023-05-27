@@ -66,7 +66,8 @@ public class PartidoVo {
     }
 
     public void setIntegrantes(String integrantes) {
-        this.integrantes = integrantes;
+
+        this.integrantes = this.integrantes + integrantes;
     }
 
     public String getGoleadores() {

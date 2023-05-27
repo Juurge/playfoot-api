@@ -15,8 +15,11 @@ public class UsuarioVo {
     private int goles=0;
     private int puntos=0;
 
+    private int idEquipoAdministracion=0;
+
     public UsuarioVo() {
     }
+
     public UsuarioVo(String nombre, String apellidos, int telefono, String dni, String correo, String password) {
         this.nombre=nombre;
         this.apellidos=apellidos;
@@ -112,5 +115,13 @@ public class UsuarioVo {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public int getIdEquipoAdministracion() {
+        return idEquipoAdministracion;
+    }
+
+    public void setIdEquipoAdministracion(int idEquipoAdministracion) {
+        this.idEquipoAdministracion = idEquipoAdministracion;
     }
 }

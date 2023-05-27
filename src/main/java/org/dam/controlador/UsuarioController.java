@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 @RestController
 @Slf4j
@@ -94,6 +95,19 @@ public class UsuarioController {
     public ResponseEntity modificarPassword(@RequestParam String correo, @RequestParam String password) throws SQLException {
         UsuarioDao.modificarPassword(correo,password);
         return new ResponseEntity(HttpStatus.OK);
+    }
+
+    @Operation(summary = "Consultar todos los usuarios")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = HttpCodes.OK, description = "ID correcto."),
+            @ApiResponse(responseCode = HttpCodes.NOT_FOUND, description = "El ID introducido no existe"),
+    })
+    @GetMapping(value = "/consultarTodos", produces = "application/json")
+    public ResponseEntity<ArrayList<UsuarioVo>> consultarTodos() throws IOException, SQLException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        ArrayList<UsuarioVo> users = UsuarioDao.consultarTodosLosUsuarios();
+        String usuariosJson = objectMapper.writeValueAsString(users);
+        return new ResponseEntity(usuariosJson, HttpStatus.OK);
     }
 
 }

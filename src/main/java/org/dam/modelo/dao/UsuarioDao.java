@@ -2,10 +2,12 @@ package org.dam.modelo.dao;
 
 import org.dam.modelo.conexion.AutoRollback;
 import org.dam.modelo.conexion.BDConexion;
+import org.dam.modelo.vo.PartidoVo;
 import org.dam.modelo.vo.UsuarioVo;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 public class UsuarioDao {
 
@@ -62,6 +64,7 @@ public class UsuarioDao {
             user.setPartidosJugados(rs.getString("partidos_jugados"));
             user.setGoles(rs.getInt("goles"));
             user.setPuntos(rs.getInt("puntos"));
+            user.setIdEquipoAdministracion(rs.getInt("idEquipoAdministracion"));
         }
 
         autoRollback.commit();
@@ -91,15 +94,29 @@ public class UsuarioDao {
 
         autoRollback.commit();
         conexion.disconnect();
+
     }
     public static void borrarUsuario(int idUsuario) throws SQLException {
+
+        UsuarioVo user = consultarUsuario(idUsuario);
+        PartidoVo partido = PartidoDao.consultarPartidoPorIdAdministrador(idUsuario);
+
+        if (partido!=null){
+            int idPartido=partido.getId();
+            PartidoDao.eliminarPartido(idPartido);
+        }
+
+        if (user.getIdEquipoAdministracion()!=0){
+            EquipoDao.cambioRolEquipo(user.getId(),user.getIdEquipoAdministracion());
+        }
+
         BDConexion conexion = new BDConexion();
 
         AutoRollback autoRollback = new AutoRollback(conexion.getConnection());
 
-        String instruccion = "DELETE FROM usuarios WHERE id_usuario =?;";
+        String instruccionDeleteUsuario = "DELETE FROM usuarios WHERE id_usuario =?;";
 
-        PreparedStatement query = conexion.getConnection().prepareStatement(instruccion);
+        PreparedStatement query = conexion.getConnection().prepareStatement(instruccionDeleteUsuario);
 
         query.setInt(1, idUsuario);
         query.executeUpdate();
@@ -119,7 +136,6 @@ public class UsuarioDao {
 
         query.setString(1, correo);
         query.setString(2, password);
-        boolean user=false;
 
         ResultSet rs=query.executeQuery();
 
@@ -163,6 +179,42 @@ public class UsuarioDao {
 
         autoRollback.commit();
         conexion.disconnect();
+
+    }
+
+    public static ArrayList<UsuarioVo> consultarTodosLosUsuarios() throws SQLException{
+
+        BDConexion conexion= new BDConexion();
+
+        AutoRollback autoRollback=new AutoRollback(conexion.getConnection());
+
+        String instruccion = "select * from usuarios;";
+
+        PreparedStatement query = conexion.getConnection().prepareStatement(instruccion);
+
+        ResultSet rs=query.executeQuery();
+        ArrayList<UsuarioVo> users = new ArrayList<>();
+        UsuarioVo user = new UsuarioVo();
+
+        while(rs.next()){
+            user.setId(rs.getInt("id_usuario"));
+            user.setNombre(rs.getString("nombre"));
+            user.setApellidos(rs.getString("apellidos"));
+            user.setTelefono(rs.getInt("telefono"));
+            user.setDni(rs.getString("dni"));
+            user.setCorreo(rs.getString("correo"));
+            user.setPosicion(rs.getString("posicion"));
+            user.setPartidosJugados(rs.getString("partidos_jugados"));
+            user.setGoles(rs.getInt("goles"));
+            user.setPuntos(rs.getInt("puntos"));
+            user.setIdEquipoAdministracion(rs.getInt("idEquipoAdministracion"));
+            users.add(user);
+        }
+
+        autoRollback.commit();
+        conexion.disconnect();
+
+        return users;
 
     }
 }

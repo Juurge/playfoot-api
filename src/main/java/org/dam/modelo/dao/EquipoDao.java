@@ -8,6 +8,7 @@ import org.dam.modelo.vo.EquipoVo;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 public class EquipoDao {
 
@@ -176,4 +177,64 @@ public class EquipoDao {
 
 
     }
+    public static ArrayList<EquipoVo> consultarTodos() throws SQLException {
+        BDConexion conexion= new BDConexion();
+
+        AutoRollback autoRollback=new AutoRollback(conexion.getConnection());
+
+        String instruccion = "select * from equipos;";
+
+        PreparedStatement query = conexion.getConnection().prepareStatement(instruccion);
+        ResultSet rs=query.executeQuery();
+
+        ArrayList<EquipoVo> equipos = new ArrayList<>();
+        EquipoVo equipo= new EquipoVo();
+        while(rs.next()){
+            equipo.setId(rs.getInt("id_equipo"));
+            equipo.setNombre(rs.getString("nombre"));
+            equipo.setIntegrantes(rs.getString("integrantes"));
+            equipo.setPartidosGanados(rs.getString("partidos_ganados"));
+            equipo.setPartidosPerdidos(rs.getString("partidos_perdidos"));
+            equipo.setIdAdministrador(rs.getInt("id_administrador"));
+            equipos.add(equipo);
+        }
+
+        autoRollback.commit();
+        conexion.disconnect();
+
+        return equipos;
+    }
+    public static void cambioRolEquipo(int idAdministrador,int idEquipo) throws SQLException {
+
+        BDConexion conexion = new BDConexion();
+
+        AutoRollback autoRollback = new AutoRollback(conexion.getConnection());
+
+        EquipoVo equipo=verEquipo(idEquipo);
+
+        String[] integrantes = equipo.getIntegrantes().split(",");
+        boolean administradorCambiado=false;
+        int i=0;
+
+        do{
+            if(integrantes[i].equalsIgnoreCase(""+idAdministrador)){
+                i++;
+            }else{
+                String instruccion = "update equipos set id_administrador=? where id_equipo=?;";
+
+                PreparedStatement query = conexion.getConnection().prepareStatement(instruccion);
+
+                query.setInt(1,idAdministrador);;
+                query.setInt(2, idEquipo);
+
+                query.executeUpdate();
+                administradorCambiado=true;
+            }
+        }while(!administradorCambiado);
+
+        autoRollback.commit();
+        conexion.disconnect();
+
+    }
+
 }
