@@ -21,6 +21,7 @@ import java.sql.SQLException;
 @RestController
 @Slf4j
 @RequestMapping("/incTecnica")
+@CrossOrigin(origins = "http://127.0.0.1:5500")
 public class IncTecnicaController {
 
     @Operation(summary = "Buscar incidencia técnica por ID")

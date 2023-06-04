@@ -22,6 +22,7 @@ import java.util.ArrayList;
 @RestController
 @Slf4j
 @RequestMapping("/partido")
+@CrossOrigin(origins = "http://127.0.0.1:5500")
 public class PartidoController {
 
     @Operation(summary = "Buscar partido por ID")

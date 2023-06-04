@@ -89,7 +89,7 @@ public class UsuarioDao {
         query.setString(4, miUsuario.getDni());
         query.setString(5, miUsuario.getCorreo());
         query.setString(6, miUsuario.getPosicion());
-        query.setInt(8, id);
+        query.setInt(7, id);
         query.executeUpdate();
 
         autoRollback.commit();
