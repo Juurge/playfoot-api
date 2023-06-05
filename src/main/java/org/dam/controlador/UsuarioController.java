@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.catalina.User;
 import org.dam.modelo.dao.UsuarioDao;
 import org.dam.modelo.http.HttpCodes;
 import org.dam.modelo.vo.UsuarioVo;
@@ -15,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Map;
 
 @RestController
 @Slf4j
@@ -59,7 +61,14 @@ public class UsuarioController {
             @ApiResponse(responseCode = HttpCodes.BAD_REQUEST, description = "El cuerpo de la petición es incorrecto"),
     })
     @PostMapping(value = "/crearUsuario", produces = "application/json")
-    public ResponseEntity crearUsuario(@RequestBody UsuarioVo user) throws SQLException {
+    public ResponseEntity crearUsuario(@RequestBody Map<String, Object> json) throws SQLException {
+        String nombre = (String) json.get("nombre");
+        String apellidos = (String) json.get("apellidos");
+        int telefono = Integer.parseInt(json.get("telefono").toString());
+        String dni = (String) json.get("dni");
+        String correo = (String) json.get("correo");
+        String password = (String) json.get("password");
+        UsuarioVo user=new UsuarioVo(nombre,apellidos,telefono,dni,correo,password);
         UsuarioDao.crearUsuario(user);
         return new ResponseEntity(HttpStatus.CREATED);
     }
