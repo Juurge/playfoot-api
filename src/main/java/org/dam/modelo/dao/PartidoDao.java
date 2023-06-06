@@ -17,7 +17,7 @@ public class PartidoDao {
 
         AutoRollback autoRollback=new AutoRollback(conexion.getConnection());
 
-        String instruccion = "insert into partidos (fecha, hora, resultado, ganador, integrantes, goleadores, tipo, estado, contador, comentarios, id_instalacion, id_administrador) " +
+        String instruccion = "insert into partidos (fecha, hora, resultado, ganador, integrantes,integrantes_2, goleadores, tipo, estado, contador, comentarios, id_instalacion, id_administrador) " +
                 "values (?,?,?,?,?,?,?,?,?,?,?,?);";
 
         PreparedStatement query = conexion.getConnection().prepareStatement(instruccion);
@@ -27,13 +27,14 @@ public class PartidoDao {
         query.setString(3, partido.getResultado());
         query.setString(4, partido.getGanador());
         query.setString(5, partido.getIntegrantes());
-        query.setString(6, partido.getGoleadores());
-        query.setString(7, partido.getTipo());
-        query.setString(8, partido.getEstado());
-        query.setInt(9, partido.getContador());
-        query.setString(10,partido.getComentarios());
-        query.setInt(11, partido.getIdInstalacion());
-        query.setInt(12, partido.getIdAdministrador());
+        query.setString(6, partido.getIntegrantes2());
+        query.setString(7, partido.getGoleadores());
+        query.setString(8, partido.getTipo());
+        query.setString(9, partido.getEstado());
+        query.setInt(10, partido.getContador());
+        query.setString(11,partido.getComentarios());
+        query.setInt(12, partido.getIdInstalacion());
+        query.setInt(13, partido.getIdAdministrador());
 
         query.executeUpdate();
 
@@ -61,6 +62,7 @@ public class PartidoDao {
             partido.setResultado(rs.getString("resultado"));
             partido.setGanador(rs.getString("ganador"));
             partido.setIntegrantes(rs.getString("integrantes"));
+            partido.setIntegrantes(rs.getString("integrantes_2"));
             partido.setGoleadores(rs.getString("goleadores"));
             partido.setTipo(rs.getString("tipo"));
             partido.setEstado(rs.getString("estado"));
@@ -121,6 +123,7 @@ public class PartidoDao {
             partido.setResultado(rs.getString("resultado"));
             partido.setGanador(rs.getString("ganador"));
             partido.setIntegrantes(rs.getString("integrantes"));
+            partido.setIntegrantes(rs.getString("integrantes_2"));
             partido.setGoleadores(rs.getString("goleadores"));
             partido.setTipo(rs.getString("tipo"));
             partido.setEstado(rs.getString("estado"));
@@ -156,6 +159,25 @@ public class PartidoDao {
 
     }
 
+    public static void unirsePartidoPublico2(int idUsuario, int idPartido) throws SQLException {
+
+        BDConexion conexion= new BDConexion();
+
+        AutoRollback autoRollback=new AutoRollback(conexion.getConnection());
+
+        String instruccion = "UPDATE partidos SET integrantes_2 = ? WHERE id_partido=?;";
+
+        PreparedStatement query = conexion.getConnection().prepareStatement(instruccion);
+
+        query.setInt(1, idUsuario);
+        query.setInt(2, idPartido);
+        query.executeUpdate();
+
+        autoRollback.commit();
+        conexion.disconnect();
+
+    }
+
     public static PartidoVo consultarPartidoPorIdAdministrador(int idAdministrador) throws SQLException {
         BDConexion conexion= new BDConexion();
 
@@ -177,6 +199,7 @@ public class PartidoDao {
             partido.setResultado(rs.getString("resultado"));
             partido.setGanador(rs.getString("ganador"));
             partido.setIntegrantes(rs.getString("integrantes"));
+            partido.setIntegrantes(rs.getString("integrantes_2"));
             partido.setGoleadores(rs.getString("goleadores"));
             partido.setTipo(rs.getString("tipo"));
             partido.setEstado(rs.getString("estado"));

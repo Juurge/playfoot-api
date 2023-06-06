@@ -8,6 +8,7 @@ public class PartidoVo {
     private String resultado="0-0";
     private String ganador;
     private String integrantes="";
+    private String integrantes2="";
     private String goleadores;
     private String tipo;
     private String estado;
@@ -68,6 +69,15 @@ public class PartidoVo {
     public void setIntegrantes(String integrantes) {
 
         this.integrantes = this.integrantes + integrantes;
+    }
+
+    public String getIntegrantes2() {
+        return integrantes2;
+    }
+
+    public void setIntegrantes2(String integrantes) {
+
+        this.integrantes2 = this.integrantes2 + integrantes;
     }
 
     public String getGoleadores() {

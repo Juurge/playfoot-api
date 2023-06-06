@@ -91,6 +91,19 @@ public class PartidoController {
     }
 
 
+    @Operation(summary = "Unirse partido público-equipo2")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = HttpCodes.OK, description = "Modificado correctamente"),
+            @ApiResponse(responseCode = HttpCodes.BAD_REQUEST, description = "El cuerpo de la petición es incorrecto"),
+            @ApiResponse(responseCode = HttpCodes.NOT_FOUND, description = "El ID introducido no existe"),
+    })
+    @PutMapping(value = "/unirsePartidoPublico2", produces = "application/json")
+    public ResponseEntity unirsePartidoPublico2(@RequestParam int idUsuario,@RequestParam int idPartido) throws SQLException {
+        PartidoDao.unirsePartidoPublico2(idUsuario,idPartido);
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
+
 }
 
 
