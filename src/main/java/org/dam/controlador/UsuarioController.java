@@ -120,4 +120,15 @@ public class UsuarioController {
         return new ResponseEntity(usuariosJson, HttpStatus.OK);
     }
 
+    @Operation(summary = "Conseguir id de un usuario")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = HttpCodes.OK, description = "ID correcto."),
+            @ApiResponse(responseCode = HttpCodes.NOT_FOUND, description = "El ID introducido no existe"),
+    })
+    @GetMapping(value = "/conseguirId", produces = "application/json")
+    public ResponseEntity conseguirId(@RequestParam String correo, @RequestParam String password) throws IOException, SQLException {
+        UsuarioDao.getIdUsuario(correo,password);
+        return new ResponseEntity( HttpStatus.OK);
+    }
+
 }

@@ -217,4 +217,27 @@ public class UsuarioDao {
         return users;
 
     }
+    public static int getIdUsuario(String correo,String password) throws SQLException {
+
+        BDConexion conexion= new BDConexion();
+
+        AutoRollback autoRollback=new AutoRollback(conexion.getConnection());
+
+        String instruccion = "select id_usuario from usuarios where correo =? and password = ?;";
+
+        PreparedStatement query = conexion.getConnection().prepareStatement(instruccion);
+
+        query.setString(1, correo);
+        query.setString(2,password);
+
+        ResultSet rs=query.executeQuery();
+
+        autoRollback.commit();
+        conexion.disconnect();
+
+        int id= rs.getInt("id_usuario");
+
+        return id;
+
+    }
 }
