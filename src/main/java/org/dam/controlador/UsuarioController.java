@@ -126,9 +126,12 @@ public class UsuarioController {
             @ApiResponse(responseCode = HttpCodes.NOT_FOUND, description = "El ID introducido no existe"),
     })
     @GetMapping(value = "/conseguirId", produces = "application/json")
-    public ResponseEntity conseguirId(@RequestParam String correo, @RequestParam String password) throws IOException, SQLException {
-        UsuarioDao.getIdUsuario(correo,password);
-        return new ResponseEntity( HttpStatus.OK);
+    public ResponseEntity<String> conseguirId(@RequestParam String correo, @RequestParam String password) throws IOException, SQLException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        int id;
+        id=UsuarioDao.getIdUsuario(correo,password);
+        String idFinal= objectMapper.writeValueAsString(id);
+        return new ResponseEntity( idFinal,HttpStatus.OK);
     }
 
 }
