@@ -235,8 +235,10 @@ public class UsuarioDao {
         autoRollback.commit();
         conexion.disconnect();
 
-        int id= rs.getInt("id_usuario");
-
+        int id=0;
+        while(rs.next()) {
+           id= rs.getInt("id_usuario");
+        }
         return id;
 
     }
