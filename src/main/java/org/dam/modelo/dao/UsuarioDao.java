@@ -232,13 +232,13 @@ public class UsuarioDao {
 
         ResultSet rs=query.executeQuery();
 
+        int id=0;
+        while(rs.next()) {
+            id= rs.getInt("id_usuario");
+        }
         autoRollback.commit();
         conexion.disconnect();
 
-        int id=0;
-        while(rs.next()) {
-           id= rs.getInt("id_usuario");
-        }
         return id;
 
     }
