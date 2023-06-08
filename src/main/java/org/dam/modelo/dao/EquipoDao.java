@@ -91,7 +91,7 @@ public class EquipoDao {
 
 
     }
-    public static void modificarEquipoIntegrantes(EquipoVo miEquipo, int id) {
+    public static void aniadirIntegranteEquipo(EquipoVo miEquipo, int id) {
         BDConexion conexion = new BDConexion();
 
         try {
@@ -104,6 +104,34 @@ public class EquipoDao {
 
 
             query.setString(1, EquipoDao.listarIntegrantes(id)+miEquipo.getIntegrantes());
+            query.setInt(2, id);
+
+
+            query.executeUpdate();
+
+            autoRollback.commit();
+            conexion.disconnect();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+
+    }
+
+    public static void borrarIntegranteEquipo(String integrantes, int id) {
+        BDConexion conexion = new BDConexion();
+
+        try {
+
+            AutoRollback autoRollback=new AutoRollback(conexion.getConnection());
+
+            String instruccion = "update equipos set integrantes = ? where id_equipo=?;";
+
+            PreparedStatement query = conexion.getConnection().prepareStatement(instruccion);
+
+
+            query.setString(1, integrantes);
             query.setInt(2, id);
 
 

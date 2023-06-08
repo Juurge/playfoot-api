@@ -76,7 +76,7 @@ public class EquipoController {
     })
     @PutMapping(value = "/modificarEquipoIntegrantes", produces = "application/json")
     public ResponseEntity modificarEquipoIntegrantes(@RequestBody EquipoVo equipo, @RequestParam int id) throws SQLException {
-        EquipoDao.modificarEquipoIntegrantes(equipo,id);
+        EquipoDao.aniadirIntegranteEquipo(equipo,id);
         return new ResponseEntity(HttpStatus.OK);
     }
 
@@ -102,6 +102,18 @@ public class EquipoController {
         ArrayList<EquipoVo> equipos = EquipoDao.consultarTodos();
         String equiposJson = objectMapper.writeValueAsString(equipos);
         return new ResponseEntity(equiposJson, HttpStatus.OK);
+    }
+
+    @Operation(summary = "Borrar  integrantes")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = HttpCodes.OK, description = "Modificado correctamente"),
+            @ApiResponse(responseCode = HttpCodes.BAD_REQUEST, description = "El cuerpo de la petición es incorrecto"),
+            @ApiResponse(responseCode = HttpCodes.NOT_FOUND, description = "El ID introducido no existe"),
+    })
+    @PutMapping(value = "/borrarEquipoIntegrantes", produces = "application/json")
+    public ResponseEntity borrarEquipoIntegrantes(@RequestBody String integrantes, @RequestParam int id) throws SQLException {
+        EquipoDao.borrarIntegranteEquipo(integrantes,id);
+        return new ResponseEntity(HttpStatus.OK);
     }
 
 }
