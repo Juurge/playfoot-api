@@ -74,7 +74,7 @@ public class EquipoController {
             @ApiResponse(responseCode = HttpCodes.BAD_REQUEST, description = "El cuerpo de la petición es incorrecto"),
             @ApiResponse(responseCode = HttpCodes.NOT_FOUND, description = "El ID introducido no existe"),
     })
-    @PutMapping(value = "/modificarEquipoNombre", produces = "application/json")
+    @PutMapping(value = "/modificarEquipoIntegrantes", produces = "application/json")
     public ResponseEntity modificarEquipoIntegrantes(@RequestBody EquipoVo equipo, @RequestParam int id) throws SQLException {
         EquipoDao.modificarEquipoIntegrantes(equipo,id);
         return new ResponseEntity(HttpStatus.OK);
