@@ -235,4 +235,58 @@ public class PartidoDao {
         conexion.disconnect();
     }
 
+    public static boolean estaFinalizado(int idPartido) throws SQLException{
+
+        BDConexion conexion = new BDConexion();
+
+        AutoRollback autoRollback = new AutoRollback(conexion.getConnection());
+
+        String instruccion = "SELECT estado FROM partidos WHERE id_partido =?;";
+
+        PreparedStatement query = conexion.getConnection().prepareStatement(instruccion);
+
+        query.setInt(1, idPartido);
+
+        ResultSet rs=query.executeQuery();
+        String estado="";
+        while(rs.next()){
+            estado=rs.getString("estado");
+        }
+
+        if (estado.equals("En curso")){
+            return false;
+        }
+        else{
+            return true;
+        }
+    }
+
+    public static boolean esAdminPartido(int id,int idPartido) throws SQLException{
+
+        BDConexion conexion = new BDConexion();
+
+        AutoRollback autoRollback = new AutoRollback(conexion.getConnection());
+
+        String instruccion = "SELECT id_administrador FROM partidos WHERE id_partido =?;";
+
+        PreparedStatement query = conexion.getConnection().prepareStatement(instruccion);
+
+        query.setInt(1, id);
+        query.setInt(2, idPartido);
+
+        ResultSet rs=query.executeQuery();
+        int id2=0;
+        while(rs.next()){
+            id2=rs.getInt("id_administrador");
+        }
+
+        if (id2==id){
+            return true;
+        }
+        else{
+            return true;
+        }
+    }
+
+
 }

@@ -9,20 +9,19 @@ public class PartidoVo {
     private String ganador;
     private String integrantes="";
     private String integrantes2="";
-    private String goleadores;
+    private String goleadores="";
     private String tipo;
-    private String estado;
+    private String estado="En curso";
     private int contador=0;
     private String comentarios="";
     private int idInstalacion;
     private int idAdministrador;
 
     public PartidoVo(String fecha, String hora, String tipo,
-                     String estado, int idInstalacion, int idAdministrador){
+                      int idInstalacion, int idAdministrador){
         this.fecha=fecha;
         this.hora=hora;
         this.tipo=tipo;
-        this.estado=estado;
         this.idInstalacion=idInstalacion;
         this.idAdministrador=idAdministrador;
     }
