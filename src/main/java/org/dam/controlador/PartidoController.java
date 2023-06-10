@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.dam.modelo.conexion.AutoRollback;
 import org.dam.modelo.conexion.BDConexion;
 import org.dam.modelo.dao.PartidoDao;
+import org.dam.modelo.dao.UsuarioDao;
 import org.dam.modelo.http.HttpCodes;
 import org.dam.modelo.vo.PartidoVo;
 import org.dam.modelo.vo.UsuarioVo;
@@ -102,7 +103,15 @@ public class PartidoController {
         PartidoDao.unirsePartidoPublico2(idUsuario,idPartido);
         return new ResponseEntity(HttpStatus.OK);
     }
-
+    @GetMapping(value = "/comprobarUsuarioExistenteDevuelveId", produces = "application/json")
+    public ResponseEntity<Integer> comprobarUsuarioExistenteDevuelveId(@RequestParam String correo) throws IOException, SQLException {
+        if (UsuarioDao.consultarUsuarioCorreo(correo)>0) {
+            int id=UsuarioDao.consultarUsuarioCorreo(correo);
+            return new ResponseEntity(id,HttpStatus.OK);
+        } else {
+            return new ResponseEntity(HttpStatus.NOT_FOUND);
+        }
+    }
 
 }
 

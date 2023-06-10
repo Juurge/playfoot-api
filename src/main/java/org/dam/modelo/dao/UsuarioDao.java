@@ -72,6 +72,27 @@ public class UsuarioDao {
 
         return user;
     }
+    public static int consultarUsuarioCorreo(String correo) throws SQLException {
+        BDConexion conexion= new BDConexion();
+
+        AutoRollback autoRollback=new AutoRollback(conexion.getConnection());
+
+        String instruccion = "select id_usuario from usuarios where correo=?;";
+
+        PreparedStatement query = conexion.getConnection().prepareStatement(instruccion);
+        int id=0;
+
+        query.setString(1, correo);
+
+        ResultSet rs=query.executeQuery();
+        while(rs.next()){
+            id=rs.getInt("id_usuario");
+        }
+        autoRollback.commit();
+        conexion.disconnect();
+
+        return id;
+    }
     public static void actualizarUsuario(UsuarioVo miUsuario,int id) throws SQLException {
 
         BDConexion conexion= new BDConexion();
