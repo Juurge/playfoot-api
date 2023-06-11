@@ -12,7 +12,7 @@ public class PartidoVo {
     private String goleadores="";
     private String tipo;
     private String estado="En curso";
-    private int contador=0;
+    private int contador=1;
     private String comentarios="";
     private int idInstalacion;
     private int idAdministrador;

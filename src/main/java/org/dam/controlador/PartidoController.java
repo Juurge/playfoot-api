@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
 import org.dam.modelo.conexion.AutoRollback;
 import org.dam.modelo.conexion.BDConexion;
+import org.dam.modelo.dao.EquipoDao;
 import org.dam.modelo.dao.PartidoDao;
 import org.dam.modelo.dao.UsuarioDao;
 import org.dam.modelo.http.HttpCodes;
@@ -123,6 +124,17 @@ public class PartidoController {
        else{
           return new ResponseEntity(HttpStatus.NOT_FOUND);
        }
+    }
+
+    @Operation(summary = "Consultar pista individual")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = HttpCodes.OK, description = "ID correcto."),
+            @ApiResponse(responseCode = HttpCodes.NOT_FOUND, description = "El ID introducido no existe"),
+    })
+    @GetMapping(value = "/consultaPistaIndividual", produces = "application/json")
+    public ResponseEntity<Integer> consultaPistaIndividual(@RequestParam String fecha, @RequestParam String hora,@RequestParam int id) throws IOException, SQLException {
+        int cod= PartidoDao.estadoPistaIndividual(fecha,hora,id);
+        return new ResponseEntity(cod, HttpStatus.OK);
     }
 }
 
