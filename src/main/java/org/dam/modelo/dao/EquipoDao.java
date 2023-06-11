@@ -291,4 +291,57 @@ public class EquipoDao {
 
     }
 
+    public static boolean esAdminEquipo(String nombre,int id) throws SQLException{
+
+        BDConexion conexion = new BDConexion();
+
+        AutoRollback autoRollback = new AutoRollback(conexion.getConnection());
+
+        String instruccion = "SELECT * FROM equipos WHERE nombre =? and id_administrador=?;";
+
+        PreparedStatement query = conexion.getConnection().prepareStatement(instruccion);
+
+        query.setString(1, nombre);
+        query.setInt(2, id);
+
+        ResultSet rs=query.executeQuery();
+        int id2=0;
+        while(rs.next()){
+            id2=rs.getInt("id_administrador");
+        }
+
+        autoRollback.commit();
+        conexion.disconnect();
+        if (id2==id){
+            return true;
+        }
+        else{
+            return true;
+
+
+        }
+    }
+
+    public static int dameIdEquipo(String nombre)throws SQLException {
+        BDConexion conexion = new BDConexion();
+
+        AutoRollback autoRollback = new AutoRollback(conexion.getConnection());
+
+        String instruccion = "SELECT id_equipo FROM equipos WHERE nombre =?;";
+
+        PreparedStatement query = conexion.getConnection().prepareStatement(instruccion);
+
+        query.setString(1, nombre);
+
+        ResultSet rs = query.executeQuery();
+
+        autoRollback.commit();
+        conexion.disconnect();
+        int idEquipo = 0;
+
+        while (rs.next()) {
+            idEquipo = rs.getInt("id_equipo");
+        }
+        return idEquipo;
+    }
 }

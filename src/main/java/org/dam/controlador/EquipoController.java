@@ -116,4 +116,35 @@ public class EquipoController {
         return new ResponseEntity(HttpStatus.OK);
     }
 
+    @Operation(summary = "Consultar administrador de equipo")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = HttpCodes.OK, description = "Es administrador"),
+            @ApiResponse(responseCode = HttpCodes.NOT_FOUND, description = "No es administrador"),
+    })
+    @PutMapping(value = "/verAdminEquipo", produces = "application/json")
+    public ResponseEntity verAdminEquipo(@RequestBody String nombre, @RequestParam int id) throws SQLException {
+        if(EquipoDao.esAdminEquipo(nombre,id)) {
+            return new ResponseEntity(HttpStatus.OK);
+        }
+        else {
+            return new ResponseEntity(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @Operation(summary = "Dame el id del equipo por nombre")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = HttpCodes.OK, description = "Equipo encontrado"),
+            @ApiResponse(responseCode = HttpCodes.NOT_FOUND, description = "El equipo no existe"),
+    })
+    @PutMapping(value = "/consultarIdEquipo", produces = "application/json")
+    public ResponseEntity<Integer> consultarIdEquipo(@RequestBody String nombre)throws SQLException {
+        int id=EquipoDao.dameIdEquipo(nombre);
+        if(id!=0){
+            return new ResponseEntity(id,HttpStatus.OK);
+        }
+        else {
+            return new ResponseEntity(id,HttpStatus.NOT_FOUND);
+        }
+    }
+
 }

@@ -150,7 +150,7 @@ public class PartidoDao {
 
         PreparedStatement query = conexion.getConnection().prepareStatement(instruccion);
 
-        query.setInt(1, idUsuario);
+        query.setString(1,PartidoDao.listarIntegrantes(idPartido)+ idUsuario);
         query.setInt(2, idPartido);
         query.executeUpdate();
 
@@ -169,7 +169,7 @@ public class PartidoDao {
 
         PreparedStatement query = conexion.getConnection().prepareStatement(instruccion);
 
-        query.setInt(1, idUsuario);
+        query.setString(1,PartidoDao.listarIntegrantes2(idPartido)+ idUsuario);
         query.setInt(2, idPartido);
         query.executeUpdate();
 
@@ -288,5 +288,45 @@ public class PartidoDao {
         }
     }
 
+    public static String listarIntegrantes(int id) throws SQLException {
+
+        BDConexion conexion = new BDConexion();
+
+        AutoRollback autoRollback = new AutoRollback(conexion.getConnection());
+
+        String instruccion = "select integrantes from partidos where id_partido =?;";
+
+        PreparedStatement query = conexion.getConnection().prepareStatement(instruccion);
+
+        query.setInt(1, id);
+        String integrantes="";
+        ResultSet rs = query.executeQuery();
+        while(rs.next()) {
+            integrantes=rs.getString("integrantes");
+        }
+        integrantes=integrantes+", ";
+        return integrantes;
+    }
+
+
+    public static String listarIntegrantes2(int id) throws SQLException {
+
+        BDConexion conexion = new BDConexion();
+
+        AutoRollback autoRollback = new AutoRollback(conexion.getConnection());
+
+        String instruccion = "select integrantes_2 from partidos where id_partido =?;";
+
+        PreparedStatement query = conexion.getConnection().prepareStatement(instruccion);
+
+        query.setInt(1, id);
+        String integrantes="";
+        ResultSet rs = query.executeQuery();
+        while(rs.next()) {
+            integrantes=rs.getString("integrantes_2");
+        }
+        integrantes=integrantes+", ";
+        return integrantes;
+    }
 
 }
