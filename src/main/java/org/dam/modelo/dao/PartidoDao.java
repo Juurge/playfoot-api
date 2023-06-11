@@ -18,7 +18,7 @@ public class PartidoDao {
         AutoRollback autoRollback=new AutoRollback(conexion.getConnection());
 
         String instruccion = "insert into partidos (fecha, hora, resultado, ganador, integrantes,integrantes_2, goleadores, tipo, estado, contador, comentarios, id_instalacion, id_administrador) " +
-                "values (?,?,?,?,?,?,?,?,?,?,?,?);";
+                "values (?,?,?,?,?,?,?,?,?,?,?,?,?);";
 
         PreparedStatement query = conexion.getConnection().prepareStatement(instruccion);
 
@@ -304,8 +304,11 @@ public class PartidoDao {
         while(rs.next()) {
             integrantes=rs.getString("integrantes");
         }
+
         integrantes=integrantes+", ";
         return integrantes;
+
+
     }
 
 
@@ -325,8 +328,125 @@ public class PartidoDao {
         while(rs.next()) {
             integrantes=rs.getString("integrantes_2");
         }
-        integrantes=integrantes+", ";
-        return integrantes;
+        if (integrantes.equals("")){
+            return integrantes;
+        } else {
+            integrantes=integrantes+", ";
+            return integrantes;
+        }
+    }
+    public static boolean consultarIntegrantesPartido(int idPartido) throws SQLException {
+        BDConexion conexion= new BDConexion();
+
+        AutoRollback autoRollback=new AutoRollback(conexion.getConnection());
+
+        String instruccion = "select integrantes, integrantes_2 from partidos where id_partido=?;";
+
+        PreparedStatement query = conexion.getConnection().prepareStatement(instruccion);
+
+        query.setInt(1, idPartido);
+
+        ResultSet rs=query.executeQuery();
+
+        PartidoVo partido= new PartidoVo();
+        int integrantes1=0;
+        int integrantes2=0;
+
+
+        while(rs.next()){
+            integrantes1=rs.getString("integrantes").length();
+            integrantes2=rs.getString("integrantes_2").length();
+
+        }
+
+        autoRollback.commit();
+        conexion.disconnect();
+        if(integrantes1==integrantes2) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    public static void aumentarJugadores(int idPartido) throws SQLException {
+        BDConexion conexion= new BDConexion();
+
+        AutoRollback autoRollback=new AutoRollback(conexion.getConnection());
+        int contador=(consultarNumJugadores(idPartido)+1);
+        String instruccion = "UPDATE partidos SET contador = ? WHERE id_partido=?;";
+
+        PreparedStatement query = conexion.getConnection().prepareStatement(instruccion);
+
+        query.setInt(1, contador);
+        query.setInt(2, idPartido);
+
+        query.executeUpdate();
+
+        autoRollback.commit();
+        conexion.disconnect();
+    }
+    public static int consultarNumJugadores(int idPartido) throws SQLException {
+        BDConexion conexion= new BDConexion();
+
+        AutoRollback autoRollback=new AutoRollback(conexion.getConnection());
+
+        String instruccion = "select contador from partidos where id_partido=?;";
+
+        PreparedStatement query = conexion.getConnection().prepareStatement(instruccion);
+
+        query.setInt(1, idPartido);
+
+        ResultSet rs = query.executeQuery();
+        int contador=0;
+        while(rs.next()) {
+            contador=rs.getInt("contador");
+        }
+        return contador;
+    }
+    public static boolean comprobarExisteJugadorPartido(int idPartido,int idUsuario) throws SQLException {
+        BDConexion conexion= new BDConexion();
+
+        AutoRollback autoRollback=new AutoRollback(conexion.getConnection());
+
+        String instruccion = "select integrantes, integrantes_2 from partidos where id_partido=?;";
+
+        PreparedStatement query = conexion.getConnection().prepareStatement(instruccion);
+
+        query.setInt(1, idPartido);
+
+        ResultSet rs=query.executeQuery();
+
+        PartidoVo partido= new PartidoVo();
+
+        String integrantes1Total="";
+        String integrantes2Total="";
+
+        while(rs.next()){
+            integrantes1Total=rs.getString("integrantes");
+            integrantes2Total=rs.getString("integrantes_2");
+        }
+
+        String [] split1=integrantes1Total.split(",");
+        boolean idIgual=false;
+        for (int i = 0; i < split1.length; i++) {
+           if ((""+idUsuario).equals(split1[i])){
+               idIgual=true;
+           }
+        }
+
+        String [] split2=integrantes2Total.split(",");
+        for (int i = 0; i < split2.length; i++) {
+            if ((""+idUsuario).equals(split2[i])){
+                idIgual=true;
+            }
+        }
+
+        autoRollback.commit();
+        conexion.disconnect();
+        if(!idIgual) {
+            return false;
+        } else {
+            return true;
+        }
     }
 
 }

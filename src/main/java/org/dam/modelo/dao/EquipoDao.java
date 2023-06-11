@@ -316,7 +316,7 @@ public class EquipoDao {
             return true;
         }
         else{
-            return true;
+            return false;
 
 
         }
@@ -344,4 +344,6 @@ public class EquipoDao {
         }
         return idEquipo;
     }
+
+
 }
