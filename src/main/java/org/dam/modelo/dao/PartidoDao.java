@@ -449,4 +449,116 @@ public class PartidoDao {
         }
     }
 
+    public static int estadoPistaIndividual(String fecha,String hora,int idInstalacion)throws SQLException{
+        BDConexion conexion = new BDConexion();
+
+        AutoRollback autoRollback = new AutoRollback(conexion.getConnection());
+
+        String instruccion = "SELECT contador FROM partidos WHERE fecha =? and hora= and id_intalacion=?;";
+
+        PreparedStatement query = conexion.getConnection().prepareStatement(instruccion);
+
+        query.setString(1, fecha);
+        query.setString(2,hora);
+        query.setInt(3,idInstalacion);
+
+        ResultSet rs = query.executeQuery();
+        int cont=0;
+        while(rs.next()){
+            cont=rs.getInt("contador");
+        }
+        autoRollback.commit();
+        conexion.disconnect();
+        int cod=1;
+        if(cont>0 || cont <14){
+            cod=2;
+            return cod;
+        }
+        else if(cont==14){
+            cod=3;
+            return cod;
+        }
+        return cod;
+    }
+
+    public static int estadoPistaEquipos(String fecha,String hora,int idInstalacion)throws SQLException{
+        BDConexion conexion = new BDConexion();
+
+        AutoRollback autoRollback = new AutoRollback(conexion.getConnection());
+
+        String instruccion = "SELECT contador FROM partidos WHERE fecha =? and hora= and id_intalacion=?;";
+
+        PreparedStatement query = conexion.getConnection().prepareStatement(instruccion);
+
+        query.setString(1, fecha);
+        query.setString(2,hora);
+        query.setInt(3,idInstalacion);
+
+        ResultSet rs = query.executeQuery();
+        int cont=0;
+        while(rs.next()){
+            cont=rs.getInt("contador");
+        }
+        autoRollback.commit();
+        conexion.disconnect();
+        int cod=1;
+        if(cont==1){
+            cod=2;
+            return cod;
+        }
+        else if(cont==2){
+            cod=3;
+            return cod;
+        }
+        return cod;
+    }
+
+    public static boolean comprobarExisteEquipoPartido(int idPartido,int idEquipo) throws SQLException {
+        BDConexion conexion= new BDConexion();
+
+        AutoRollback autoRollback=new AutoRollback(conexion.getConnection());
+
+        String instruccion = "select integrantes, integrantes_2 from partidos where id_partido=?;";
+
+        PreparedStatement query = conexion.getConnection().prepareStatement(instruccion);
+
+        query.setInt(1, idPartido);
+
+        ResultSet rs=query.executeQuery();
+
+        String integrantes1Total="";
+        String integrantes2Total="";
+
+        while(rs.next()){
+            integrantes1Total=rs.getString("integrantes");
+            integrantes2Total=rs.getString("integrantes_2");
+        }
+        if(EquipoDao.dameIntegrantesEquipo(idEquipo).equals(integrantes1Total) || EquipoDao.dameIntegrantesEquipo(idEquipo).equals(integrantes2Total)){
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    public static void unirsePartidoEquipos(int idEquipo, int idPartido) throws SQLException {
+
+        BDConexion conexion= new BDConexion();
+
+        AutoRollback autoRollback=new AutoRollback(conexion.getConnection());
+
+        String integrantes=EquipoDao.dameIntegrantesEquipo(idEquipo);
+
+        String instruccion = "UPDATE partidos SET integrantes_2 = ? WHERE id_partido=?;";
+
+        PreparedStatement query = conexion.getConnection().prepareStatement(instruccion);
+
+        query.setString(1,integrantes);
+        query.setInt(2, idPartido);
+        query.executeUpdate();
+
+        autoRollback.commit();
+        conexion.disconnect();
+
+    }
 }

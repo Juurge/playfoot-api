@@ -121,7 +121,7 @@ public class EquipoController {
             @ApiResponse(responseCode = HttpCodes.OK, description = "Es administrador"),
             @ApiResponse(responseCode = HttpCodes.NOT_FOUND, description = "No es administrador"),
     })
-    @PutMapping(value = "/verAdminEquipo", produces = "application/json")
+    @GetMapping(value = "/verAdminEquipo", produces = "application/json")
     public ResponseEntity verAdminEquipo(@RequestParam String nombre, @RequestParam int id) throws SQLException {
         if(EquipoDao.esAdminEquipo(nombre,id)) {
             return new ResponseEntity(HttpStatus.OK);
@@ -136,7 +136,7 @@ public class EquipoController {
             @ApiResponse(responseCode = HttpCodes.OK, description = "Equipo encontrado"),
             @ApiResponse(responseCode = HttpCodes.NOT_FOUND, description = "El equipo no existe"),
     })
-    @PutMapping(value = "/consultarIdEquipo", produces = "application/json")
+    @GetMapping(value = "/consultarIdEquipo", produces = "application/json")
     public ResponseEntity<Integer> consultarIdEquipo(@RequestParam String nombre)throws SQLException {
         int id=EquipoDao.dameIdEquipo(nombre);
         if(id!=0){

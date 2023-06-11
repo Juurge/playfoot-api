@@ -345,5 +345,25 @@ public class EquipoDao {
         return idEquipo;
     }
 
+    public static String dameIntegrantesEquipo(int id)throws SQLException{
+        BDConexion conexion = new BDConexion();
 
+        AutoRollback autoRollback = new AutoRollback(conexion.getConnection());
+
+        String instruccion = "SELECT integrantes FROM equipos WHERE id_equipo =?;";
+
+        PreparedStatement query = conexion.getConnection().prepareStatement(instruccion);
+
+        query.setInt(1, id);
+
+        ResultSet rs = query.executeQuery();
+
+        autoRollback.commit();
+        conexion.disconnect();
+        String integrantes="";
+        while (rs.next()) {
+            integrantes = rs.getString("integrantes");
+        }
+        return integrantes;
+    }
 }

@@ -79,14 +79,14 @@ public class PartidoController {
         return new ResponseEntity(partidosJson, HttpStatus.OK);
     }
 
-    @Operation(summary = "Unirse partido público")
+    @Operation(summary = "Unirse partido individual")
     @ApiResponses(value = {
             @ApiResponse(responseCode = HttpCodes.OK, description = "Modificado correctamente"),
             @ApiResponse(responseCode = HttpCodes.BAD_REQUEST, description = "El cuerpo de la petición es incorrecto"),
             @ApiResponse(responseCode = HttpCodes.NOT_FOUND, description = "El ID introducido no existe"),
     })
-    @PutMapping(value = "/unirsePartidoPublico", produces = "application/json")
-    public ResponseEntity unirsePartidoPublico(@RequestParam int idUsuario,@RequestParam int idPartido) throws SQLException {
+    @PutMapping(value = "/unirsePartidoIndividual", produces = "application/json")
+    public ResponseEntity unirsePartidoIndividual(@RequestParam int idUsuario,@RequestParam int idPartido) throws SQLException {
         if (PartidoDao.consultarIntegrantesPartido(idPartido) && !PartidoDao.comprobarExisteJugadorPartido(idPartido,idUsuario)){
             PartidoDao.unirsePartidoPublico(idUsuario,idPartido);
             PartidoDao.aumentarJugadores(idPartido);
@@ -99,8 +99,8 @@ public class PartidoController {
             return new ResponseEntity(HttpStatus.NOT_FOUND);
         }
     }
-    @GetMapping(value = "/comprobarUsuarioExistenteDevuelveId", produces = "application/json")
-    public ResponseEntity<Integer> comprobarUsuarioExistenteDevuelveId(@RequestParam String correo) throws IOException, SQLException {
+    @GetMapping(value = "/devueldeIdPorCorreo", produces = "application/json")
+    public ResponseEntity<Integer> devueldeIdPorCorreo(@RequestParam String correo) throws IOException, SQLException {
         if (UsuarioDao.consultarUsuarioCorreo(correo)>0) {
             int id=UsuarioDao.consultarUsuarioCorreo(correo);
             return new ResponseEntity(id,HttpStatus.OK);
@@ -108,7 +108,22 @@ public class PartidoController {
             return new ResponseEntity(HttpStatus.NOT_FOUND);
         }
     }
-
+    @Operation(summary = "Unirse partido por equipos")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = HttpCodes.OK, description = "Modificado correctamente"),
+            @ApiResponse(responseCode = HttpCodes.BAD_REQUEST, description = "El cuerpo de la petición es incorrecto"),
+            @ApiResponse(responseCode = HttpCodes.NOT_FOUND, description = "El ID introducido no existe"),
+    })
+    @PutMapping(value = "/unirsePartidoEquipos", produces = "application/json")
+    public ResponseEntity unirsePartidoEquipos(@RequestParam int idEquipo,@RequestParam int idPartido) throws SQLException {
+       if(PartidoDao.comprobarExisteEquipoPartido(idEquipo,idPartido)){
+           PartidoDao.unirsePartidoEquipos(idEquipo,idPartido);
+           return new ResponseEntity(HttpStatus.OK);
+       }
+       else{
+          return new ResponseEntity(HttpStatus.NOT_FOUND);
+       }
+    }
 }
 
 

@@ -64,7 +64,7 @@ public class UsuarioDao {
             user.setPartidosJugados(rs.getString("partidos_jugados"));
             user.setGoles(rs.getInt("goles"));
             user.setPuntos(rs.getInt("puntos"));
-            user.setIdEquipoAdministracion(rs.getInt("idEquipoAdministracion"));
+           // user.setIdEquipoAdministracion(rs.getInt("idEquipoAdministracion"));
         }
 
         autoRollback.commit();
@@ -228,7 +228,7 @@ public class UsuarioDao {
             user.setPartidosJugados(rs.getString("partidos_jugados"));
             user.setGoles(rs.getInt("goles"));
             user.setPuntos(rs.getInt("puntos"));
-            user.setIdEquipoAdministracion(rs.getInt("idEquipoAdministracion"));
+           // user.setIdEquipoAdministracion(rs.getInt("idEquipoAdministracion"));
             users.add(user);
         }
 
