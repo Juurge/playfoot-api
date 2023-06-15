@@ -42,7 +42,7 @@ public class EquipoVo {
     }
 
     public void setPartidosGanados(String partidosGanados) {
-        this.partidosGanados = this.partidosGanados + partidosGanados;
+        this.partidosGanados =  partidosGanados;
     }
 
     public String getPartidosPerdidos() {
@@ -50,7 +50,7 @@ public class EquipoVo {
     }
 
     public void setPartidosPerdidos(String partidosPerdidos) {
-        this.partidosPerdidos = this.partidosPerdidos + partidosPerdidos;
+        this.partidosPerdidos =  partidosPerdidos;
     }
 
     public int getIdAdministrador() {

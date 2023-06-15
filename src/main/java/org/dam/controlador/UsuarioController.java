@@ -21,7 +21,7 @@ import java.util.Map;
 @RestController
 @Slf4j
 @RequestMapping("/usuario")
-@CrossOrigin(origins = "http://127.0.0.1:5500")
+@CrossOrigin(origins = "http://127.0.0.1:5501")
 public class UsuarioController {
 
     @Operation(summary = "Buscar usuario por ID")

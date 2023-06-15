@@ -8,7 +8,7 @@ public class BDConexion {
 
     static String bd = "playfoot";
     static String login = "root";
-    static String password = "root";
+    static String password = "052331";
     static String url = "jdbc:mysql://localhost/" + bd;
 
     Connection conn = null;

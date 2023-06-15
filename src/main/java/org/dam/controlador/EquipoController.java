@@ -22,7 +22,7 @@ import java.util.ArrayList;
 @RestController
 @Slf4j
 @RequestMapping("/equipo")
-@CrossOrigin(origins = "http://127.0.0.1:5500")
+@CrossOrigin(origins = "http://127.0.0.1:5501")
 public class EquipoController {
 
     @Operation(summary = "Buscar equipo por ID")

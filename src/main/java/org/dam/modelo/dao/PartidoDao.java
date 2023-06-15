@@ -123,7 +123,7 @@ public class PartidoDao {
             partido.setResultado(rs.getString("resultado"));
             partido.setGanador(rs.getString("ganador"));
             partido.setIntegrantes(rs.getString("integrantes"));
-            partido.setIntegrantes(rs.getString("integrantes_2"));
+            partido.setIntegrantes2(rs.getString("integrantes_2"));
             partido.setGoleadores(rs.getString("goleadores"));
             partido.setTipo(rs.getString("tipo"));
             partido.setEstado(rs.getString("estado"));
@@ -132,6 +132,7 @@ public class PartidoDao {
             partido.setIdInstalacion(rs.getInt("id_instalacion"));
             partido.setIdAdministrador(rs.getInt("id_administrador"));
             partidos.add(partido);
+            partido=new PartidoVo();
         }
 
         autoRollback.commit();
@@ -428,14 +429,14 @@ public class PartidoDao {
         String [] split1=integrantes1Total.split(",");
         boolean idIgual=false;
         for (int i = 0; i < split1.length; i++) {
-           if ((""+idUsuario).equals(split1[i])){
+           if ((" "+idUsuario).equals(split1[i])){
                idIgual=true;
            }
         }
 
         String [] split2=integrantes2Total.split(",");
         for (int i = 0; i < split2.length; i++) {
-            if ((""+idUsuario).equals(split2[i])){
+            if ((" "+idUsuario).equals(split2[i])){
                 idIgual=true;
             }
         }
@@ -454,7 +455,7 @@ public class PartidoDao {
 
         AutoRollback autoRollback = new AutoRollback(conexion.getConnection());
 
-        String instruccion = "SELECT contador FROM partidos WHERE fecha =? and hora= and id_intalacion=?;";
+        String instruccion = "SELECT contador FROM partidos WHERE fecha =? and hora=? and id_instalacion=?;";
 
         PreparedStatement query = conexion.getConnection().prepareStatement(instruccion);
 
@@ -470,7 +471,8 @@ public class PartidoDao {
         autoRollback.commit();
         conexion.disconnect();
         int cod=1;
-        if(cont>0 || cont <14){
+
+        if(cont>=1 && cont <14){
             cod=2;
             return cod;
         }
@@ -547,7 +549,7 @@ public class PartidoDao {
 
         AutoRollback autoRollback=new AutoRollback(conexion.getConnection());
 
-        String integrantes=EquipoDao.dameIntegrantesEquipo(idEquipo);
+        String integrantes=EquipoDao.dameNombresEquipo(idEquipo);
 
         String instruccion = "UPDATE partidos SET integrantes_2 = ? WHERE id_partido=?;";
 
@@ -560,5 +562,44 @@ public class PartidoDao {
         autoRollback.commit();
         conexion.disconnect();
 
+    }
+    public static void aumentarNumeroEquipo(int idPartido) throws SQLException {
+        BDConexion conexion= new BDConexion();
+
+        AutoRollback autoRollback=new AutoRollback(conexion.getConnection());
+        int contador=2;
+        String instruccion = "UPDATE partidos SET contador = ? WHERE id_partido=?;";
+
+        PreparedStatement query = conexion.getConnection().prepareStatement(instruccion);
+
+        query.setInt(1, contador);
+        query.setInt(2, idPartido);
+
+        query.executeUpdate();
+
+        autoRollback.commit();
+        conexion.disconnect();
+    }
+    public static int devolverIdPartido(String fecha,String hora,int idInstalacion)throws SQLException{
+        BDConexion conexion = new BDConexion();
+
+        AutoRollback autoRollback = new AutoRollback(conexion.getConnection());
+
+        String instruccion = "SELECT id_partido FROM partidos WHERE fecha =? and hora=? and id_instalacion=?;";
+
+        PreparedStatement query = conexion.getConnection().prepareStatement(instruccion);
+
+        query.setString(1, fecha);
+        query.setString(2,hora);
+        query.setInt(3,idInstalacion);
+
+        ResultSet rs = query.executeQuery();
+        int id=0;
+        while(rs.next()){
+            id=rs.getInt("id_partido");
+        }
+        autoRollback.commit();
+        conexion.disconnect();
+        return id;
     }
 }

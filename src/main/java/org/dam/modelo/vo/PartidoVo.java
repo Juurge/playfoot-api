@@ -24,6 +24,7 @@ public class PartidoVo {
         this.tipo=tipo;
         this.idInstalacion=idInstalacion;
         this.idAdministrador=idAdministrador;
+
     }
 
     public PartidoVo() {
@@ -108,7 +109,7 @@ public class PartidoVo {
     }
 
     public void setContador(int contador) {
-        this.contador = this.contador + 1;
+        this.contador = contador ;
     }
 
     public int getIdInstalacion() {

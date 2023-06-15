@@ -24,7 +24,7 @@ import java.util.ArrayList;
 @RestController
 @Slf4j
 @RequestMapping("/partido")
-@CrossOrigin(origins = "http://127.0.0.1:5500")
+@CrossOrigin(origins = "http://127.0.0.1:5501")
 public class PartidoController {
 
     @Operation(summary = "Buscar partido por ID")
@@ -119,6 +119,7 @@ public class PartidoController {
     public ResponseEntity unirsePartidoEquipos(@RequestParam int idEquipo,@RequestParam int idPartido) throws SQLException {
        if(PartidoDao.comprobarExisteEquipoPartido(idEquipo,idPartido)){
            PartidoDao.unirsePartidoEquipos(idEquipo,idPartido);
+           PartidoDao.aumentarNumeroEquipo(idPartido);
            return new ResponseEntity(HttpStatus.OK);
        }
        else{
@@ -136,6 +137,19 @@ public class PartidoController {
         int cod= PartidoDao.estadoPistaIndividual(fecha,hora,id);
         return new ResponseEntity(cod, HttpStatus.OK);
     }
+    @Operation(summary = "Buscar id_partido por fecha, hora e instalacion")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = HttpCodes.OK, description = "ID correcto."),
+            @ApiResponse(responseCode = HttpCodes.NOT_FOUND, description = "El ID introducido no existe"),
+    })
+    @GetMapping(value = "/buscarIDPartidoPorFechaHoraInstalacion", produces = "application/json")
+    public ResponseEntity<Integer> buscarIDPartidoPorFechaHoraInstalacion(@RequestParam String fecha, @RequestParam String hora, @RequestParam int idInstalacion) throws IOException, SQLException {
+        int id=PartidoDao.devolverIdPartido(fecha, hora, idInstalacion);
+        return new ResponseEntity(id, HttpStatus.OK);
+    }
+
+
+
 }
 
 
