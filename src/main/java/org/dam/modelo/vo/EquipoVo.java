@@ -5,8 +5,8 @@ public class EquipoVo {
     private int id;
     private String nombre;
     private String integrantes="";
-    private String partidosGanados="0";
-    private String partidosPerdidos="0";
+    private int partidosGanados=0;
+    private int partidosPerdidos=0;
     private int idAdministrador;
 
     public EquipoVo(String nombre,int idAdministrador) {
@@ -37,19 +37,19 @@ public class EquipoVo {
         this.integrantes = this.integrantes + integrantes;
     }
 
-    public String getPartidosGanados() {
+    public int getPartidosGanados() {
         return partidosGanados;
     }
 
-    public void setPartidosGanados(String partidosGanados) {
+    public void setPartidosGanados(int partidosGanados) {
         this.partidosGanados =  partidosGanados;
     }
 
-    public String getPartidosPerdidos() {
+    public int getPartidosPerdidos() {
         return partidosPerdidos;
     }
 
-    public void setPartidosPerdidos(String partidosPerdidos) {
+    public void setPartidosPerdidos(int partidosPerdidos) {
         this.partidosPerdidos =  partidosPerdidos;
     }
 

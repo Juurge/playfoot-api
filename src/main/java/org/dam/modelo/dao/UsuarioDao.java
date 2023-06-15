@@ -18,7 +18,7 @@ public class UsuarioDao {
         AutoRollback autoRollback=new AutoRollback(conexion.getConnection());
 
         String instruccion = "insert into usuarios (nombre, apellidos, telefono, dni, correo, password, " +
-                "posicion, partidos_jugados, goles, puntos) values (?,?,?,?,?,?,?,?,?,?);";
+                "posicion, partidos_jugados, goles) values (?,?,?,?,?,?,?,?,?);";
 
         PreparedStatement query = conexion.getConnection().prepareStatement(instruccion);
 
@@ -29,9 +29,9 @@ public class UsuarioDao {
         query.setString(5, miUsuario.getCorreo());
         query.setString(6, miUsuario.getPassword());
         query.setString(7, miUsuario.getPosicion());
-        query.setString(8, miUsuario.getPartidosJugados());
+        query.setInt(8, miUsuario.getPartidosJugados());
         query.setInt(9, miUsuario.getGoles());
-        query.setInt(10, miUsuario.getPuntos());
+        //query.setInt(10, miUsuario.getPuntos());
 
         query.executeUpdate();
 
@@ -61,9 +61,8 @@ public class UsuarioDao {
             user.setDni(rs.getString("dni"));
             user.setCorreo(rs.getString("correo"));
             user.setPosicion(rs.getString("posicion"));
-            user.setPartidosJugados(rs.getString("partidos_jugados"));
+            user.setPartidosJugados(rs.getInt("partidos_jugados"));
             user.setGoles(rs.getInt("goles"));
-            user.setPuntos(rs.getInt("puntos"));
            // user.setIdEquipoAdministracion(rs.getInt("idEquipoAdministracion"));
         }
 
@@ -225,9 +224,8 @@ public class UsuarioDao {
             user.setDni(rs.getString("dni"));
             user.setCorreo(rs.getString("correo"));
             user.setPosicion(rs.getString("posicion"));
-            user.setPartidosJugados(rs.getString("partidos_jugados"));
+            user.setPartidosJugados(rs.getInt("partidos_jugados"));
             user.setGoles(rs.getInt("goles"));
-            user.setPuntos(rs.getInt("puntos"));
            // user.setIdEquipoAdministracion(rs.getInt("idEquipoAdministracion"));
             users.add(user);
         }

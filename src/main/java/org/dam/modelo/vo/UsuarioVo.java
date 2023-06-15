@@ -11,9 +11,8 @@ public class UsuarioVo {
     private String correo;
     private String password;
     private String posicion="";
-    private String partidosJugados="";
+    private int partidosJugados=0;
     private int goles=0;
-    private int puntos=0;
 
     private int idEquipoAdministracion=0;
 
@@ -85,11 +84,11 @@ public class UsuarioVo {
         this.posicion = posicion;
     }
 
-    public String getPartidosJugados() {
+    public int getPartidosJugados() {
         return partidosJugados;
     }
 
-    public void setPartidosJugados(String partidosJugados) {
+    public void setPartidosJugados(int partidosJugados) {
         this.partidosJugados = this.partidosJugados + partidosJugados;
     }
 
@@ -99,14 +98,6 @@ public class UsuarioVo {
 
     public void setGoles(int goles) {
         this.goles = this.goles + goles;
-    }
-
-    public int getPuntos() {
-        return puntos;
-    }
-
-    public void setPuntos(int puntos) {
-        this.puntos = puntos;
     }
 
     public String getPassword() {

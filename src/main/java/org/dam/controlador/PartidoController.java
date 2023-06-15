@@ -51,8 +51,13 @@ public class PartidoController {
     })
     @PostMapping(value = "/crearPartido", produces = "application/json")
     public ResponseEntity crearPartido(@RequestBody PartidoVo partido) throws SQLException {
-        PartidoDao.crearPartido(partido);
-        return new ResponseEntity(HttpStatus.CREATED);
+        if(PartidoDao.tieneAlgunPartidoIniciado(partido.getIdAdministrador())){
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        }else{
+            PartidoDao.crearPartido(partido);
+            return new ResponseEntity(HttpStatus.CREATED);
+        }
+
     }
 
     @Operation(summary = "Modificar partido")
@@ -117,15 +122,26 @@ public class PartidoController {
     })
     @PutMapping(value = "/unirsePartidoEquipos", produces = "application/json")
     public ResponseEntity unirsePartidoEquipos(@RequestParam int idEquipo,@RequestParam int idPartido) throws SQLException {
-       if(PartidoDao.comprobarExisteEquipoPartido(idEquipo,idPartido)){
+      if(PartidoDao.comprobarExisteEquipoPartido(idEquipo,idPartido)){
            PartidoDao.unirsePartidoEquipos(idEquipo,idPartido);
            PartidoDao.aumentarNumeroEquipo(idPartido);
            return new ResponseEntity(HttpStatus.OK);
        }
        else{
+
           return new ResponseEntity(HttpStatus.NOT_FOUND);
        }
+
+
+
+
+
+
+
     }
+
+
+
 
     @Operation(summary = "Consultar pista individual")
     @ApiResponses(value = {
@@ -147,6 +163,111 @@ public class PartidoController {
         int id=PartidoDao.devolverIdPartido(fecha, hora, idInstalacion);
         return new ResponseEntity(id, HttpStatus.OK);
     }
+
+    @Operation(summary = "Buscar id_partido por estado y idAdministrador")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = HttpCodes.OK, description = "ID correcto."),
+            @ApiResponse(responseCode = HttpCodes.NOT_FOUND, description = "El ID introducido no existe"),
+    })
+    @GetMapping(value = "/buscarIDPartidoPorEstadoIdAdministrador", produces = "application/json")
+    public ResponseEntity<Integer> buscarIDPartidoPorEstadoIdAdministrador(@RequestParam String estado, @RequestParam int idAdministrador) throws IOException, SQLException {
+        int id=PartidoDao.devolverIdPartidoEstadoIdAdministrador(estado,idAdministrador);
+        if (id!=0){
+            return new ResponseEntity(id, HttpStatus.OK);
+
+        } else {
+            return new ResponseEntity(id, HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @Operation(summary = "Actualizar goles jugador")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = HttpCodes.OK, description = "Modificado correctamente"),
+            @ApiResponse(responseCode = HttpCodes.BAD_REQUEST, description = "El cuerpo de la petición es incorrecto"),
+            @ApiResponse(responseCode = HttpCodes.NOT_FOUND, description = "El ID introducido no existe"),
+    })
+    @PutMapping(value = "/actualizarGolesJugador", produces = "application/json")
+    public ResponseEntity actualizarGolesJugador(@RequestParam String goleadores) throws SQLException {
+        PartidoDao.actualizarGoles(goleadores);
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
+    @Operation(summary = "Actualizar partidos jugados")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = HttpCodes.OK, description = "Modificado correctamente"),
+            @ApiResponse(responseCode = HttpCodes.BAD_REQUEST, description = "El cuerpo de la petición es incorrecto"),
+            @ApiResponse(responseCode = HttpCodes.NOT_FOUND, description = "El ID introducido no existe"),
+    })
+    @PutMapping(value = "/actualizarPartidosJugados", produces = "application/json")
+    public ResponseEntity actualizarPartidosJugados(@RequestParam String integrantes) throws SQLException {
+        PartidoDao.actualizarPartidosJugados(integrantes);
+        return new ResponseEntity(HttpStatus.OK);
+    }
+    @Operation(summary = "Buscar integrantes de un partido")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = HttpCodes.OK, description = "ID correcto."),
+            @ApiResponse(responseCode = HttpCodes.NOT_FOUND, description = "El ID introducido no existe"),
+    })
+    @GetMapping(value = "/buscarIntegrantesPartido", produces = "application/json")
+    public ResponseEntity<String> buscarIntegrantesPartido(@RequestParam int idPartido) throws IOException, SQLException {
+        String integrantes="";
+        integrantes=PartidoDao.consultaIntegrantesPartido(idPartido);
+        ObjectMapper objectMapper = new ObjectMapper();
+        String json = objectMapper.writeValueAsString(integrantes);
+        return new ResponseEntity<>(json, HttpStatus.OK);
+    }
+
+    @Operation(summary = "Buscar integrantes_2 de un partido")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = HttpCodes.OK, description = "ID correcto."),
+            @ApiResponse(responseCode = HttpCodes.NOT_FOUND, description = "El ID introducido no existe"),
+    })
+    @GetMapping(value = "/buscarIntegrantes2Partido", produces = "application/json")
+    public ResponseEntity<String> buscarIntegrantes2Partido(@RequestParam int idPartido) throws IOException, SQLException {
+        String integrantes2="";
+        integrantes2=PartidoDao.consultaIntegrantes2Partido(idPartido);
+        ObjectMapper objectMapper = new ObjectMapper();
+        String json = objectMapper.writeValueAsString(integrantes2);
+        return new ResponseEntity<>(json, HttpStatus.OK);
+    }
+
+    @Operation(summary = "Buscar tipo partido")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = HttpCodes.OK, description = "ID correcto."),
+            @ApiResponse(responseCode = HttpCodes.NOT_FOUND, description = "El ID introducido no existe"),
+    })
+    @GetMapping(value = "/buscarTipoPartido", produces = "application/json")
+    public ResponseEntity<Integer> buscarTipoPartido(@RequestParam int idPartido) throws IOException, SQLException {
+        int tipo=PartidoDao.consultaTipoPartido(idPartido);
+        return new ResponseEntity(tipo, HttpStatus.OK);
+    }
+    @Operation(summary = "Actualizar partidos ganados equipo")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = HttpCodes.OK, description = "Modificado correctamente"),
+            @ApiResponse(responseCode = HttpCodes.BAD_REQUEST, description = "El cuerpo de la petición es incorrecto"),
+            @ApiResponse(responseCode = HttpCodes.NOT_FOUND, description = "El ID introducido no existe"),
+    })
+    @PutMapping(value = "/actualizarPartidosGanadosEquipo", produces = "application/json")
+    public ResponseEntity actualizarPartidosGanadosEquipo(@RequestParam String nombreEquipo) throws SQLException {
+        PartidoDao.actualizarPartidosGanadosEquipo(nombreEquipo);
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
+    @Operation(summary = "Actualizar partidos perdidos equipo")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = HttpCodes.OK, description = "Modificado correctamente"),
+            @ApiResponse(responseCode = HttpCodes.BAD_REQUEST, description = "El cuerpo de la petición es incorrecto"),
+            @ApiResponse(responseCode = HttpCodes.NOT_FOUND, description = "El ID introducido no existe"),
+    })
+    @PutMapping(value = "/actualizarPartidosPerdidosEquipo", produces = "application/json")
+    public ResponseEntity actualizarPartidosPerdidosEquipo(@RequestParam String nombreEquipo) throws SQLException {
+        PartidoDao.actualizarPartidosPerdidosEquipo(nombreEquipo);
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
+
+
+
 
 
 

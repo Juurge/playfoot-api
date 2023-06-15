@@ -25,8 +25,8 @@ public class EquipoDao {
 
             query.setString(1, miEquipo.getNombre());
             query.setString(2, miEquipo.getIntegrantes());
-            query.setString(3, miEquipo.getPartidosGanados());
-            query.setString(4, miEquipo.getPartidosPerdidos());
+            query.setInt(3, miEquipo.getPartidosGanados());
+            query.setInt(4, miEquipo.getPartidosPerdidos());
             query.setInt(5, miEquipo.getIdAdministrador());
 
 
@@ -166,8 +166,8 @@ public class EquipoDao {
             equipo.setId(rs.getInt("id_equipo"));
             equipo.setNombre(rs.getString("nombre"));
             equipo.setIntegrantes(rs.getString("integrantes"));
-            equipo.setPartidosGanados(rs.getString("partidos_ganados"));
-            equipo.setPartidosPerdidos(rs.getString("partidos_perdidos"));
+            equipo.setPartidosGanados(rs.getInt("partidos_ganados"));
+            equipo.setPartidosPerdidos(rs.getInt("partidos_perdidos"));
             equipo.setIdAdministrador(rs.getInt("id_administrador"));
         }
 
@@ -215,8 +215,8 @@ public class EquipoDao {
 
             PreparedStatement query = conexion.getConnection().prepareStatement(instruccion);
 
-            query.setString(1, miEquipo.getPartidosGanados());
-            query.setString(2, miEquipo.getPartidosPerdidos());
+            query.setInt(1, miEquipo.getPartidosGanados());
+            query.setInt(2, miEquipo.getPartidosPerdidos());
             query.setInt(3, id);
 
 
@@ -247,8 +247,8 @@ public class EquipoDao {
             equipo.setId(rs.getInt("id_equipo"));
             equipo.setNombre(rs.getString("nombre"));
             equipo.setIntegrantes(rs.getString("integrantes"));
-            equipo.setPartidosGanados(rs.getString("partidos_ganados"));
-            equipo.setPartidosPerdidos(rs.getString("partidos_perdidos"));
+            equipo.setPartidosGanados(rs.getInt("partidos_ganados"));
+            equipo.setPartidosPerdidos(rs.getInt("partidos_perdidos"));
             equipo.setIdAdministrador(rs.getInt("id_administrador"));
             equipos.add(equipo);
         }
@@ -388,4 +388,13 @@ public class EquipoDao {
         }
         return integrantes;
     }
+
+
+
+
+
+
+
+
+
 }
